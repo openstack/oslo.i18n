@@ -6,7 +6,7 @@
 .venv
 .tox
 cover/
-openstack.common.egg-info/
+oslo.i18n.egg-info/
 .openstack-common-venv/
 skeleton.egg-info/
 build/
