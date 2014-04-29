@@ -757,18 +757,24 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
 
 class LogLevelTranslationsTest(test_base.BaseTestCase):
 
-    scenarios = [
-        (level, {'level': level})
-        for level in
-        ['info', 'warning', 'error', 'critical']
-    ]
+    def test_info(self):
+        self._test('info')
 
-    def test(self):
+    def test_warning(self):
+        self._test('warning')
+
+    def test_error(self):
+        self._test('error')
+
+    def test_critical(self):
+        self._test('critical')
+
+    def _test(self, level):
         with mock.patch.object(gettextutils.TranslatorFactory,
                                '_make_translation_func') as mtf:
             tf = gettextutils.TranslatorFactory('domain', lazy=False)
-            getattr(tf, 'log_%s' % self.level)
-            mtf.assert_called_with('domain-log-%s' % self.level)
+            getattr(tf, 'log_%s' % level)
+            mtf.assert_called_with('domain-log-%s' % level)
 
 
 class SomeObject(object):
