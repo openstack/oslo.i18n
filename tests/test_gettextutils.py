@@ -17,15 +17,16 @@
 import gettext
 import logging
 
+from oslo.i18n import gettextutils
+
 from babel import localedata
 import mock
-from oslotest import base as test_base
 import six
 import testtools
 
-from openstack.common.fixture import moxstubout
-from openstack.common import gettextutils
-from tests.unit import fakes
+from oslotest import base as test_base
+from oslotest import moxstubout
+from tests import fakes
 
 LOG = logging.getLogger(__name__)
 

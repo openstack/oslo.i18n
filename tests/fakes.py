@@ -19,23 +19,6 @@ Fakes For filter and weight tests.
 
 import gettext
 
-from openstack.common.scheduler import weights
-
-
-class FakeWeigher1(weights.BaseHostWeigher):
-    def __init__(self):
-        pass
-
-
-class FakeWeigher2(weights.BaseHostWeigher):
-    def __init__(self):
-        pass
-
-
-class FakeClass(object):
-    def __init__(self):
-        pass
-
 
 class FakeTranslations(gettext.GNUTranslations):
     """A test GNUTranslations class that takes a map of msg -> translations."""
