@@ -14,7 +14,7 @@
 #    under the License.
 
 """
-Fakes For filter and weight tests.
+Fakes For translation tests.
 """
 
 import gettext
