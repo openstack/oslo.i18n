@@ -14,12 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""
-gettext for openstack-common modules.
-
-Usual usage in an openstack.common module:
-
-    from openstack.common.gettextutils import _
+"""gettextutils provides a wrapper around gettext for OpenStack projects
 """
 
 import copy
