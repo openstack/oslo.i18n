@@ -33,6 +33,13 @@ _AVAILABLE_LANGUAGES = {}
 USE_LAZY = False
 
 
+def _get_locale_dir_variable_name(domain):
+    """Convert a translation domain name to a variable for specifying
+    a separate locale dir.
+    """
+    return domain.upper().replace('.', '_').replace('-', '_') + '_LOCALEDIR'
+
+
 class TranslatorFactory(object):
     """Create translator functions
     """
@@ -52,7 +59,7 @@ class TranslatorFactory(object):
         self.domain = domain
         self.lazy = lazy
         if localedir is None:
-            localedir = os.environ.get(domain.upper() + '_LOCALEDIR')
+            localedir = os.environ.get(_get_locale_dir_variable_name(domain))
         self.localedir = localedir
 
     def _make_translation_func(self, domain=None):
