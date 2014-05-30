@@ -1,8 +1,10 @@
-===========
- oslo.i18n
-===========
+==================================================
+ oslo.i18n -- Oslo Internationalization Utilities
+==================================================
 
-oslo.i18n library
+The oslo.i18n library contain utilities for working with
+internationalization (i18n) features, especially translation for text
+strings in an application or library.
 
 * Free software: Apache license
 * Documentation: http://docs.openstack.org/developer/oslo.i18n

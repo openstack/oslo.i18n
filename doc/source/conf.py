@@ -58,6 +58,8 @@ pygments_style = 'sphinx'
 # html_theme = '_theme'
 # html_static_path = ['static']
 
+html_use_modindex = True
+
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
 

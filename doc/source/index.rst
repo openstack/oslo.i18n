@@ -1,24 +1,24 @@
-..  documentation master file, created by
-   sphinx-quickstart on Tue Jul  9 22:26:36 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+==================================================
+ oslo.i18n -- Oslo Internationalization Utilities
+==================================================
 
-Welcome to 's documentation!
-========================================================
+The oslo.i18n library contain utilities for working with
+internationalization (i18n) features, especially translation for text
+strings in an application or library.
 
-Contents:
+Contents
+========
 
 .. toctree::
    :maxdepth: 2
 
-   readme
-   installation
    usage
+   guidelines
+   api
    contributing
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`

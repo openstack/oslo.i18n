@@ -1,11 +1,23 @@
-=======
- Usage
-=======
+=====================================================
+ How to Use oslo.i18n in Your Application or Library
+=====================================================
 
-Integration Module
-==================
+Installing
+==========
 
-To use in a project, create a small integration module containing:
+At the command line::
+
+    $ pip install oslo.i18n
+
+.. _integration-module:
+
+Creating an Integration Module
+==============================
+
+To use oslo.i18n in a project, you will need to create a small
+integration module to hold an instance of
+:class:`~oslo.i18n.gettextutils.TranslatorFactory` and references to
+the marker functions the factory creates.
 
 ::
 
@@ -26,8 +38,8 @@ To use in a project, create a small integration module containing:
     _LE = _translators.log_error
     _LC = _translators.log_critical
 
-Then, in your application code, use the appropriate marker function
-for your case:
+Then, in the rest of your code, use the appropriate marker function
+for each message:
 
 ::
 
@@ -40,6 +52,17 @@ for your case:
     # ...
 
     raise RuntimeError(_('exception message'))
+
+.. warning::
+
+   The old method of installing a version of ``_()`` in the builtins
+   namespace is deprecated. Modifying the global namespace affects
+   libraries as well as the application, so it may interfere with
+   proper message catalog lookups. Calls to
+   :func:`gettextutils.install` should be replaced with the
+   application or library integration module described here.
+
+.. _lazy-translation:
 
 Lazy Translation
 ================
@@ -65,3 +88,39 @@ To enable lazy translation, call :func:`enable_lazy`.
     from oslo.i18n import gettextutils
 
     gettextutils.enable_lazy()
+
+Translating Messages
+====================
+
+Use :func:`~oslo.i18n.gettextutils.translate` to translate strings to
+a specific locale. :func:`translate` handles delayed translation and
+strings that have already been translated immediately. It should be
+used at the point where the locale to be used is known, which is often
+just prior to the message being returned or a log message being
+emitted.
+
+::
+
+    from oslo.i18n import gettextutils
+
+    trans_msg = gettextutils.translate(msg, desired_locale=my_locale)
+
+if desired_locale is not specified then the default locale is used.
+
+Available Languages
+===================
+
+Only the languages that have translations provided are available for
+translation. To determine which languages are available the
+:func:`~oslo.i18n.gettextutils.get_available_languages` is provided. Since different languages
+can be installed for each domain, the domain must be specified.
+
+::
+
+      from oslo.i18n import gettextutils
+
+      avail_lang = gettextutils.get_available_languages('myapp')
+
+.. seealso::
+
+   * :doc:`guidelines`
