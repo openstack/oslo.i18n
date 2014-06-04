@@ -23,7 +23,8 @@ from oslotest import base as test_base
 
 from tests import fakes
 
-from oslo.i18n import gettextutils
+from oslo.i18n import _message
+from oslo.i18n import log as i18n_log
 
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
 
         self.stream = six.StringIO()
         self.destination_handler = logging.StreamHandler(self.stream)
-        self.translation_handler = gettextutils.TranslationHandler('zh_CN')
+        self.translation_handler = i18n_log.TranslationHandler('zh_CN')
         self.translation_handler.setTarget(self.destination_handler)
 
         self.logger = logging.getLogger('localehander_logger')
@@ -56,7 +57,7 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
-        msg = gettextutils.Message(log_message)
+        msg = _message.Message(log_message)
 
         self.logger.info(msg)
         self.assertIn(log_message_translation, self.stream.getvalue())
@@ -74,8 +75,8 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
-        msg = gettextutils.Message(log_message)
-        arg = gettextutils.Message(log_arg)
+        msg = _message.Message(log_message)
+        arg = _message.Message(log_arg)
 
         self.logger.info(msg, arg)
         self.assertIn(log_message_translation % log_arg_translation,
@@ -97,9 +98,9 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
-        msg = gettextutils.Message(log_message)
-        arg_1 = gettextutils.Message(log_arg_1)
-        arg_2 = gettextutils.Message(log_arg_2)
+        msg = _message.Message(log_message)
+        arg_1 = _message.Message(log_arg_1)
+        arg_2 = _message.Message(log_arg_2)
 
         self.logger.info(msg, {'arg1': arg_1, 'arg2': arg_2})
         translation = log_message_translation % {'arg1': log_arg_1_translation,

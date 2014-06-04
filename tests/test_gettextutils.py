@@ -24,9 +24,8 @@ import six
 from oslotest import base as test_base
 from oslotest import moxstubout
 
-from tests import fakes
-from tests import utils
-
+from oslo.i18n import _lazy
+from oslo.i18n import _message
 from oslo.i18n import gettextutils
 
 
@@ -41,35 +40,27 @@ class GettextTest(test_base.BaseTestCase):
         self.stubs = moxfixture.stubs
         self.mox = moxfixture.mox
         # remember so we can reset to it later in case it changes
-        self._USE_LAZY = gettextutils._USE_LAZY
+        self._USE_LAZY = _lazy.USE_LAZY
+        self.t = gettextutils.TranslatorFactory('oslo.i18n.test')
 
     def tearDown(self):
         # reset to value before test
-        gettextutils._USE_LAZY = self._USE_LAZY
+        _lazy.USE_LAZY = self._USE_LAZY
         super(GettextTest, self).tearDown()
 
-    def test_enable_lazy(self):
-        gettextutils._USE_LAZY = False
-        gettextutils.enable_lazy()
-        self.assertTrue(gettextutils._USE_LAZY)
-
-    def test_disable_lazy(self):
-        gettextutils._USE_LAZY = True
-        gettextutils.enable_lazy(False)
-        self.assertFalse(gettextutils._USE_LAZY)
-
     def test_gettext_does_not_blow_up(self):
-        LOG.info(gettextutils._('test'))
+        LOG.info(self.t.primary('test'))
 
     def test_gettextutils_install(self):
         gettextutils.install('blaa')
         gettextutils.enable_lazy(False)
-        self.assertTrue(isinstance(_('A String'), six.text_type))  # noqa
+        self.assertTrue(isinstance(self.t.primary('A String'),
+                                   six.text_type))
 
         gettextutils.install('blaa')
         gettextutils.enable_lazy(True)
-        self.assertTrue(isinstance(_('A Message'),  # noqa
-                                   gettextutils.Message))
+        self.assertTrue(isinstance(self.t.primary('A Message'),
+                                   _message.Message))
 
     def test_gettext_install_looks_up_localedir(self):
         with mock.patch('os.environ.get') as environ_get:
@@ -133,19 +124,3 @@ class GettextTest(test_base.BaseTestCase):
         unknown_domain_languages = gettextutils.get_available_languages('huh')
         self.assertEqual(1, len(unknown_domain_languages))
         self.assertIn('en_US', unknown_domain_languages)
-
-    @mock.patch('gettext.translation')
-    def test_translate(self, mock_translation):
-        en_message = 'A message in the default locale'
-        es_translation = 'A message in Spanish'
-        message = gettextutils.Message(en_message)
-
-        es_translations = {en_message: es_translation}
-        translations_map = {'es': es_translations}
-        translator = fakes.FakeTranslations.translator(translations_map)
-        mock_translation.side_effect = translator
-
-        # translate() works on msgs and on objects whose unicode reps are msgs
-        obj = utils.SomeObject(message)
-        self.assertEqual(es_translation, gettextutils.translate(message, 'es'))
-        self.assertEqual(es_translation, gettextutils.translate(obj, 'es'))

@@ -19,6 +19,8 @@ import six
 
 from oslotest import base as test_base
 
+from oslo.i18n import _lazy
+from oslo.i18n import _message
 from oslo.i18n import gettextutils
 
 
@@ -27,23 +29,23 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
     def setUp(self):
         super(TranslatorFactoryTest, self).setUp()
         # remember so we can reset to it later in case it changes
-        self._USE_LAZY = gettextutils._USE_LAZY
+        self._USE_LAZY = _lazy.USE_LAZY
 
     def tearDown(self):
         # reset to value before test
-        gettextutils._USE_LAZY = self._USE_LAZY
+        _lazy.USE_LAZY = self._USE_LAZY
         super(TranslatorFactoryTest, self).tearDown()
 
     def test_lazy(self):
         gettextutils.enable_lazy(True)
-        with mock.patch.object(gettextutils, 'Message') as msg:
+        with mock.patch.object(_message, 'Message') as msg:
             tf = gettextutils.TranslatorFactory('domain')
             tf.primary('some text')
             msg.assert_called_with('some text', domain='domain')
 
     def test_not_lazy(self):
         gettextutils.enable_lazy(False)
-        with mock.patch.object(gettextutils, 'Message') as msg:
+        with mock.patch.object(_message, 'Message') as msg:
             msg.side_effect = AssertionError('should not use Message')
             tf = gettextutils.TranslatorFactory('domain')
             tf.primary('some text')
@@ -52,11 +54,11 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
         gettextutils.enable_lazy(True)
         tf = gettextutils.TranslatorFactory('domain')
         r = tf.primary('some text')
-        self.assertIsInstance(r, gettextutils.Message)
+        self.assertIsInstance(r, _message.Message)
         gettextutils.enable_lazy(False)
         r = tf.primary('some text')
         # Python 2.6 doesn't have assertNotIsInstance().
-        self.assertFalse(isinstance(r, gettextutils.Message))
+        self.assertFalse(isinstance(r, _message.Message))
 
     def test_py2(self):
         gettextutils.enable_lazy(False)
