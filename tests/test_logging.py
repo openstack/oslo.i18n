@@ -37,6 +37,6 @@ class LogLevelTranslationsTest(test_base.BaseTestCase):
     def _test(self, level):
         with mock.patch.object(gettextutils.TranslatorFactory,
                                '_make_translation_func') as mtf:
-            tf = gettextutils.TranslatorFactory('domain', lazy=False)
+            tf = gettextutils.TranslatorFactory('domain')
             getattr(tf, 'log_%s' % level)
             mtf.assert_called_with('domain-log-%s' % level)

@@ -40,49 +40,52 @@ class GettextTest(test_base.BaseTestCase):
         moxfixture = self.useFixture(moxstubout.MoxStubout())
         self.stubs = moxfixture.stubs
         self.mox = moxfixture.mox
-        # remember so we can reset to it later
-        self._USE_LAZY = gettextutils.USE_LAZY
+        # remember so we can reset to it later in case it changes
+        self._USE_LAZY = gettextutils._USE_LAZY
 
     def tearDown(self):
         # reset to value before test
-        gettextutils.USE_LAZY = self._USE_LAZY
+        gettextutils._USE_LAZY = self._USE_LAZY
         super(GettextTest, self).tearDown()
 
     def test_enable_lazy(self):
-        gettextutils.USE_LAZY = False
-
+        gettextutils._USE_LAZY = False
         gettextutils.enable_lazy()
-        # assert now enabled
-        self.assertTrue(gettextutils.USE_LAZY)
+        self.assertTrue(gettextutils._USE_LAZY)
+
+    def test_disable_lazy(self):
+        gettextutils._USE_LAZY = True
+        gettextutils.enable_lazy(False)
+        self.assertFalse(gettextutils._USE_LAZY)
 
     def test_gettext_does_not_blow_up(self):
         LOG.info(gettextutils._('test'))
 
     def test_gettextutils_install(self):
         gettextutils.install('blaa')
+        gettextutils.enable_lazy(False)
         self.assertTrue(isinstance(_('A String'), six.text_type))  # noqa
 
-        gettextutils.install('blaa', lazy=True)
+        gettextutils.install('blaa')
+        gettextutils.enable_lazy(True)
         self.assertTrue(isinstance(_('A Message'),  # noqa
                                    gettextutils.Message))
 
     def test_gettext_install_looks_up_localedir(self):
         with mock.patch('os.environ.get') as environ_get:
-            with mock.patch('gettext.install') as gettext_install:
+            with mock.patch('gettext.install'):
                 environ_get.return_value = '/foo/bar'
-
                 gettextutils.install('blaa')
+                environ_get.assert_calls([mock.call('BLAA_LOCALEDIR')])
 
-                environ_get.assert_called_once_with('BLAA_LOCALEDIR')
-                if six.PY3:
-                    gettext_install.assert_called_once_with(
-                        'blaa',
-                        localedir='/foo/bar')
-                else:
-                    gettext_install.assert_called_once_with(
-                        'blaa',
-                        localedir='/foo/bar',
-                        unicode=True)
+    def test_gettext_install_updates_builtins(self):
+        with mock.patch('os.environ.get') as environ_get:
+            with mock.patch('gettext.install'):
+                environ_get.return_value = '/foo/bar'
+                if '_' in six.moves.builtins.__dict__:
+                    del six.moves.builtins.__dict__['_']
+                gettextutils.install('blaa')
+                self.assertIn('_', six.moves.builtins.__dict__)
 
     def test_get_available_languages(self):
         # All the available languages for which locale data is available

@@ -24,37 +24,67 @@ from oslo.i18n import gettextutils
 
 class TranslatorFactoryTest(test_base.BaseTestCase):
 
+    def setUp(self):
+        super(TranslatorFactoryTest, self).setUp()
+        # remember so we can reset to it later in case it changes
+        self._USE_LAZY = gettextutils._USE_LAZY
+
+    def tearDown(self):
+        # reset to value before test
+        gettextutils._USE_LAZY = self._USE_LAZY
+        super(TranslatorFactoryTest, self).tearDown()
+
     def test_lazy(self):
+        gettextutils.enable_lazy(True)
         with mock.patch.object(gettextutils, 'Message') as msg:
-            tf = gettextutils.TranslatorFactory('domain', lazy=True)
+            tf = gettextutils.TranslatorFactory('domain')
             tf.primary('some text')
             msg.assert_called_with('some text', domain='domain')
 
+    def test_not_lazy(self):
+        gettextutils.enable_lazy(False)
+        with mock.patch.object(gettextutils, 'Message') as msg:
+            msg.side_effect = AssertionError('should not use Message')
+            tf = gettextutils.TranslatorFactory('domain')
+            tf.primary('some text')
+
+    def test_change_lazy(self):
+        gettextutils.enable_lazy(True)
+        tf = gettextutils.TranslatorFactory('domain')
+        r = tf.primary('some text')
+        self.assertIsInstance(r, gettextutils.Message)
+        gettextutils.enable_lazy(False)
+        r = tf.primary('some text')
+        # Python 2.6 doesn't have assertNotIsInstance().
+        self.assertFalse(isinstance(r, gettextutils.Message))
+
     def test_py2(self):
+        gettextutils.enable_lazy(False)
         with mock.patch.object(six, 'PY3', False):
             with mock.patch('gettext.translation') as translation:
                 trans = mock.Mock()
                 translation.return_value = trans
                 trans.gettext.side_effect = AssertionError(
                     'should have called ugettext')
-                tf = gettextutils.TranslatorFactory('domain', lazy=False)
+                tf = gettextutils.TranslatorFactory('domain')
                 tf.primary('some text')
                 trans.ugettext.assert_called_with('some text')
 
     def test_py3(self):
+        gettextutils.enable_lazy(False)
         with mock.patch.object(six, 'PY3', True):
             with mock.patch('gettext.translation') as translation:
                 trans = mock.Mock()
                 translation.return_value = trans
                 trans.ugettext.side_effect = AssertionError(
                     'should have called gettext')
-                tf = gettextutils.TranslatorFactory('domain', lazy=False)
+                tf = gettextutils.TranslatorFactory('domain')
                 tf.primary('some text')
                 trans.gettext.assert_called_with('some text')
 
     def test_log_level_domain_name(self):
         with mock.patch.object(gettextutils.TranslatorFactory,
                                '_make_translation_func') as mtf:
-            tf = gettextutils.TranslatorFactory('domain', lazy=False)
+            tf = gettextutils.TranslatorFactory('domain')
             tf._make_log_translation_func('mylevel')
             mtf.assert_called_with('domain-log-mylevel')

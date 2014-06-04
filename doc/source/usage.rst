@@ -2,6 +2,9 @@
  Usage
 =======
 
+Integration Module
+==================
+
 To use in a project, create a small integration module containing:
 
 ::
@@ -37,3 +40,28 @@ for your case:
     # ...
 
     raise RuntimeError(_('exception message'))
+
+Lazy Translation
+================
+
+Lazy translation delays converting a message string to the translated
+form as long as possible, including possibly never if the message is
+not logged or delivered to the user in some other way. It also
+supports logging translated messages in multiple languages, by
+configuring separate log handlers.
+
+Lazy translation is implemented by returning a special object from the
+translation function, instead of a unicode string. That special
+message object supports some, but not all, string manipulation
+APIs. For example, concatenation with addition is not supported, but
+interpolation of variables is supported. Depending on how translated
+strings are used in an application, these restrictions may mean that
+lazy translation cannot be used, and so it is not enabled by default.
+
+To enable lazy translation, call :func:`enable_lazy`.
+
+::
+
+    from oslo.i18n import gettextutils
+
+    gettextutils.enable_lazy()

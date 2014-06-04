@@ -18,7 +18,6 @@
 """
 
 import copy
-import functools
 import gettext
 import locale
 from logging import handlers
@@ -29,8 +28,7 @@ import six
 
 _AVAILABLE_LANGUAGES = {}
 
-# FIXME(dhellmann): Remove this when moving to oslo.i18n.
-USE_LAZY = False
+_USE_LAZY = False
 
 
 def _get_locale_dir_variable_name(domain):
@@ -44,49 +42,53 @@ class TranslatorFactory(object):
     """Create translator functions
     """
 
-    def __init__(self, domain, lazy=False, localedir=None):
+    def __init__(self, domain, localedir=None):
         """Establish a set of translation functions for the domain.
 
         :param domain: Name of translation domain,
                        specifying a message catalog.
         :type domain: str
-        :param lazy: Delays translation until a message is emitted.
-                     Defaults to False.
-        :type lazy: Boolean
         :param localedir: Directory with translation catalogs.
         :type localedir: str
         """
         self.domain = domain
-        self.lazy = lazy
         if localedir is None:
             localedir = os.environ.get(_get_locale_dir_variable_name(domain))
         self.localedir = localedir
 
     def _make_translation_func(self, domain=None):
-        """Return a new translation function ready for use.
+        """Return a translation function ready for use with messages.
 
-        Takes into account whether or not lazy translation is being
-        done.
+        The returned function takes a single value, the unicode string
+        to be translated.  The return type varies depending on whether
+        lazy translation is being done. When lazy translation is
+        enabled, :class:`Message` objects are returned instead of
+        regular :class:`unicode` strings.
 
-        The domain can be specified to override the default from the
-        factory, but the localedir from the factory is always used
-        because we assume the log-level translation catalogs are
+        The domain argument can be specified to override the default
+        from the factory, but the localedir from the factory is always
+        used because we assume the log-level translation catalogs are
         installed in the same directory as the main application
         catalog.
 
         """
         if domain is None:
             domain = self.domain
-        if self.lazy:
-            return functools.partial(Message, domain=domain)
         t = gettext.translation(
             domain,
             localedir=self.localedir,
             fallback=True,
         )
-        if six.PY3:
-            return t.gettext
-        return t.ugettext
+        # Use the appropriate method of the translation object based
+        # on the python version.
+        m = t.gettext if six.PY3 else t.ugettext
+
+        def f(msg):
+            """oslo.i18n.gettextutils translation function."""
+            if _USE_LAZY:
+                return Message(msg, domain=domain)
+            return m(msg)
+        return f
 
     @property
     def primary(self):
@@ -141,27 +143,24 @@ _LC = _translators.log_critical
 # integration module.
 
 
-def enable_lazy():
+def enable_lazy(enable=True):
     """Convenience function for configuring _() to use lazy gettext
 
     Call this at the start of execution to enable the gettextutils._
     function to use lazy gettext functionality. This is useful if
     your project is importing _ directly instead of using the
     gettextutils.install() way of importing the _ function.
+
+    :param enable: Flag indicating whether lazy translation should be
+                   turned on or off.  Defaults to True.
+    :type enable: bool
+
     """
-    # FIXME(dhellmann): This function will be removed in oslo.i18n,
-    # because the TranslatorFactory makes it superfluous.
-    global _, _LI, _LW, _LE, _LC, USE_LAZY
-    tf = TranslatorFactory('oslo', lazy=True)
-    _ = tf.primary
-    _LI = tf.log_info
-    _LW = tf.log_warning
-    _LE = tf.log_error
-    _LC = tf.log_critical
-    USE_LAZY = True
+    global _USE_LAZY
+    _USE_LAZY = enable
 
 
-def install(domain, lazy=False):
+def install(domain):
     """Install a _() function using the given translation domain.
 
     Given a translation domain, install a _() function using gettext's
@@ -179,19 +178,9 @@ def install(domain, lazy=False):
                  instead of strings, which can then be lazily translated into
                  any available locale.
     """
-    if lazy:
-        from six import moves
-        tf = TranslatorFactory(domain, lazy=True)
-        moves.builtins.__dict__['_'] = tf.primary
-    else:
-        localedir = '%s_LOCALEDIR' % domain.upper()
-        if six.PY3:
-            gettext.install(domain,
-                            localedir=os.environ.get(localedir))
-        else:
-            gettext.install(domain,
-                            localedir=os.environ.get(localedir),
-                            unicode=True)
+    from six import moves
+    tf = TranslatorFactory(domain)
+    moves.builtins.__dict__['_'] = tf.primary
 
 
 class Message(six.text_type):
