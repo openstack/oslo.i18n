@@ -89,20 +89,14 @@ class Message(six.text_type):
         if not desired_locale:
             system_locale = locale.getdefaultlocale()
             # If the system locale is not available to the runtime use English
-            if not system_locale[0]:
-                desired_locale = 'en_US'
-            else:
-                desired_locale = system_locale[0]
+            desired_locale = system_locale[0] or 'en_US'
 
         locale_dir = os.environ.get(domain.upper() + '_LOCALEDIR')
         lang = gettext.translation(domain,
                                    localedir=locale_dir,
                                    languages=[desired_locale],
                                    fallback=True)
-        if six.PY3:
-            translator = lang.gettext
-        else:
-            translator = lang.ugettext
+        translator = lang.gettext if six.PY3 else lang.ugettext
 
         translated_message = translator(msgid)
         return translated_message
@@ -135,10 +129,10 @@ class Message(six.text_type):
             # Copy each item in case one does not support deep copy.
             params = {}
             if isinstance(self.params, dict):
-                for key, val in self.params.items():
-                    params[key] = self._copy_param(val)
-            for key, val in other.items():
-                params[key] = self._copy_param(val)
+                params.update((key, self._copy_param(val))
+                              for key, val in self.params.items())
+            params.update((key, self._copy_param(val))
+                          for key, val in other.items())
         else:
             params = self._copy_param(other)
         return params

@@ -41,9 +41,8 @@ class TranslatorFactory(object):
         """
         self.domain = domain
         if localedir is None:
-            localedir = os.environ.get(_locale.get_locale_dir_variable_name(
-                domain
-            ))
+            variable_name = _locale.get_locale_dir_variable_name(domain)
+            localedir = os.environ.get(variable_name)
         self.localedir = localedir
 
     def _make_translation_func(self, domain=None):
@@ -64,11 +63,9 @@ class TranslatorFactory(object):
         """
         if domain is None:
             domain = self.domain
-        t = gettext.translation(
-            domain,
-            localedir=self.localedir,
-            fallback=True,
-        )
+        t = gettext.translation(domain,
+                                localedir=self.localedir,
+                                fallback=True)
         # Use the appropriate method of the translation object based
         # on the python version.
         m = t.gettext if six.PY3 else t.ugettext

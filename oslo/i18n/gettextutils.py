@@ -61,13 +61,14 @@ def get_available_languages(domain):
 
     :param domain: the domain to get languages for
     """
+    def find(language, domain, localedir):
+        return gettext.find(domain, localedir=os.environ.get(localedir),
+                            languages=[language])
+
     if domain in _AVAILABLE_LANGUAGES:
         return copy.copy(_AVAILABLE_LANGUAGES[domain])
 
     localedir = '%s_LOCALEDIR' % domain.upper()
-    find = lambda x: gettext.find(domain,
-                                  localedir=os.environ.get(localedir),
-                                  languages=[x])
 
     # NOTE(mrodden): en_US should always be available (and first in case
     # order matters) since our in-line message strings are en_US
@@ -80,9 +81,8 @@ def get_available_languages(domain):
                         getattr(localedata, 'locale_identifiers'))
     locale_identifiers = list_identifiers()
 
-    for i in locale_identifiers:
-        if find(i) is not None:
-            language_list.append(i)
+    language_list.extend(language for language in locale_identifiers
+                         if find(language, domain, localedir))
 
     # NOTE(luisg): Babel>=1.0,<1.3 has a bug where some OpenStack supported
     # locales (e.g. 'zh_CN', and 'zh_TW') aren't supported even though they
@@ -96,9 +96,10 @@ def get_available_languages(domain):
                'zh_Hant_HK': 'zh_HK',
                'zh_Hant': 'zh_TW',
                'fil': 'tl_PH'}
-    for (locale, alias) in six.iteritems(aliases):
-        if locale in language_list and alias not in language_list:
-            language_list.append(alias)
+
+    language_list.extend(alias for locale, alias in six.iteritems(aliases)
+                         if (locale in language_list and
+                             alias not in language_list))
 
     _AVAILABLE_LANGUAGES[domain] = language_list
     return copy.copy(language_list)
