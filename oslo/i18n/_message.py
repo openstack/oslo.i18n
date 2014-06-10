@@ -23,6 +23,7 @@ import os
 
 import six
 
+from oslo.i18n import _locale
 from oslo.i18n import _translate
 
 
@@ -91,7 +92,9 @@ class Message(six.text_type):
             # If the system locale is not available to the runtime use English
             desired_locale = system_locale[0] or 'en_US'
 
-        locale_dir = os.environ.get(domain.upper() + '_LOCALEDIR')
+        locale_dir = os.environ.get(
+            _locale.get_locale_dir_variable_name(domain)
+        )
         lang = gettext.translation(domain,
                                    localedir=locale_dir,
                                    languages=[desired_locale],

@@ -27,6 +27,7 @@ import six
 # Expose a few internal pieces as part of our public API.
 from oslo.i18n._factory import TranslatorFactory  # noqa
 from oslo.i18n._lazy import enable_lazy  # noqa
+from oslo.i18n import _locale
 from oslo.i18n._translate import translate  # noqa
 
 
@@ -61,14 +62,13 @@ def get_available_languages(domain):
 
     :param domain: the domain to get languages for
     """
-    def find(language, domain, localedir):
-        return gettext.find(domain, localedir=os.environ.get(localedir),
-                            languages=[language])
-
     if domain in _AVAILABLE_LANGUAGES:
         return copy.copy(_AVAILABLE_LANGUAGES[domain])
 
-    localedir = '%s_LOCALEDIR' % domain.upper()
+    localedir = os.environ.get(_locale.get_locale_dir_variable_name(domain))
+    find = lambda x: gettext.find(domain,
+                                  localedir=localedir,
+                                  languages=[x])
 
     # NOTE(mrodden): en_US should always be available (and first in case
     # order matters) since our in-line message strings are en_US
@@ -82,7 +82,7 @@ def get_available_languages(domain):
     locale_identifiers = list_identifiers()
 
     language_list.extend(language for language in locale_identifiers
-                         if find(language, domain, localedir))
+                         if find(language))
 
     # NOTE(luisg): Babel>=1.0,<1.3 has a bug where some OpenStack supported
     # locales (e.g. 'zh_CN', and 'zh_TW') aren't supported even though they
