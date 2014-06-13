@@ -17,9 +17,8 @@
 import logging
 
 import mock
-import six
-
 from oslotest import base as test_base
+import six
 
 from tests import fakes
 

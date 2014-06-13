@@ -19,16 +19,14 @@ from __future__ import unicode_literals
 import logging
 
 import mock
+from oslotest import base as test_base
 import six
 import testtools
-
-from oslotest import base as test_base
 
 from tests import fakes
 from tests import utils
 
 from oslo.i18n import _message
-
 
 LOG = logging.getLogger(__name__)
 
