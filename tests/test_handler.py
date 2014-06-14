@@ -20,10 +20,9 @@ import mock
 from oslotest import base as test_base
 import six
 
-from tests import fakes
-
 from oslo.i18n import _message
 from oslo.i18n import log as i18n_log
+from tests import fakes
 
 LOG = logging.getLogger(__name__)
 

@@ -19,10 +19,9 @@ import logging
 
 from babel import localedata
 import mock
-import six
-
 from oslotest import base as test_base
 from oslotest import moxstubout
+import six
 
 from oslo.i18n import _lazy
 from oslo.i18n import _message

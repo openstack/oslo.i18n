@@ -36,7 +36,9 @@ class FakeTranslations(gettext.GNUTranslations):
 
     @staticmethod
     def translator(locales_map):
-        """Returns a mock gettext.translation function that uses
+        """Build mock translator for the given locales.
+
+        Returns a mock gettext.translation function that uses
         individual TestTranslations to translate in the given locales.
 
         :param locales_map: A map from locale name to a translations map.
@@ -44,6 +46,8 @@ class FakeTranslations(gettext.GNUTranslations):
                              'es': {'Hi': 'Hola', 'Bye': 'Adios'},
                              'zh': {'Hi': 'Ni Hao', 'Bye': 'Zaijian'}
                             }
+
+
         """
         def _translation(domain, localedir=None,
                          languages=None, fallback=None):

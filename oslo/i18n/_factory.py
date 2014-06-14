@@ -27,8 +27,7 @@ from oslo.i18n import _message
 
 
 class TranslatorFactory(object):
-    """Create translator functions
-    """
+    "Create translator functions"
 
     def __init__(self, domain, localedir=None):
         """Establish a set of translation functions for the domain.

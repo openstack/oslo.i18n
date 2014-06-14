@@ -15,9 +15,8 @@
 #    under the License.
 
 import mock
-import six
-
 from oslotest import base as test_base
+import six
 
 from oslo.i18n import _lazy
 from oslo.i18n import _message
