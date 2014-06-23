@@ -15,6 +15,7 @@ Contents
    usage
    guidelines
    api
+   policy
    contributing
 
 Indices and tables
