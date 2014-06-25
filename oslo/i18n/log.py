@@ -29,7 +29,8 @@ class TranslationHandler(handlers.MemoryHandler):
     to forward LogRecord objects to after translating them. This handler
     depends on Message objects being logged, instead of regular strings.
 
-    The handler can be configured declaratively in the logging.conf as follows:
+    The handler can be configured declaratively in the
+    ``logging.conf`` as follows::
 
         [handlers]
         keys = translatedlog, translator
@@ -40,12 +41,13 @@ class TranslationHandler(handlers.MemoryHandler):
         formatter = context
 
         [handler_translator]
-        class = openstack.common.log.TranslationHandler
+        class = oslo.i18n.log.TranslationHandler
         target = translatedlog
         args = ('zh_CN',)
 
     If the specified locale is not available in the system, the handler will
     log in the default locale.
+
     """
 
     def __init__(self, locale=None, target=None):
