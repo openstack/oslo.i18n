@@ -25,9 +25,15 @@ from oslo.i18n import _translate
 class TranslationHandler(handlers.MemoryHandler):
     """Handler that translates records before logging them.
 
-    The TranslationHandler takes a locale and a target logging.Handler object
-    to forward LogRecord objects to after translating them. This handler
-    depends on Message objects being logged, instead of regular strings.
+    When lazy translation is enabled in the application (see
+    :func:`~oslo.i18n.enable_lazy`), the :class:`TranslationHandler`
+    uses its locale configuration setting to determine how to
+    translate LogRecord objects before forwarding them to the
+    logging.Handler.
+
+    When lazy translation is disabled, the message in the LogRecord is
+    converted to unicode without any changes and then forwarded to the
+    logging.Handler.
 
     The handler can be configured declaratively in the
     ``logging.conf`` as follows::
