@@ -26,6 +26,11 @@ from oslo.i18n import _locale
 from oslo.i18n import _message
 
 
+__all__ = [
+    'TranslatorFactory',
+]
+
+
 class TranslatorFactory(object):
     "Create translator functions"
 

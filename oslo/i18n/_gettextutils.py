@@ -24,11 +24,13 @@ import os
 from babel import localedata
 import six
 
-# Expose a few internal pieces as part of our public API.
-from oslo.i18n._factory import TranslatorFactory  # noqa
-from oslo.i18n._lazy import enable_lazy  # noqa
+from oslo.i18n import _factory
 from oslo.i18n import _locale
-from oslo.i18n._translate import translate  # noqa
+
+__all__ = [
+    'install',
+    'get_available_languages',
+]
 
 
 def install(domain):
@@ -50,7 +52,7 @@ def install(domain):
                  any available locale.
     """
     from six import moves
-    tf = TranslatorFactory(domain)
+    tf = _factory.TranslatorFactory(domain)
     moves.builtins.__dict__['_'] = tf.primary
 
 

@@ -16,6 +16,10 @@
 
 import six
 
+__all__ = [
+    'translate',
+]
+
 
 def translate(obj, desired_locale=None):
     """Gets the translated unicode representation of the given object.

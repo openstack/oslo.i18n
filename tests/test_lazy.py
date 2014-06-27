@@ -17,7 +17,6 @@
 from oslotest import base as test_base
 
 from oslo.i18n import _lazy
-from oslo.i18n import gettextutils
 
 
 class LazyTest(test_base.BaseTestCase):
@@ -32,10 +31,10 @@ class LazyTest(test_base.BaseTestCase):
 
     def test_enable_lazy(self):
         _lazy.USE_LAZY = False
-        gettextutils.enable_lazy()
+        _lazy.enable_lazy()
         self.assertTrue(_lazy.USE_LAZY)
 
     def test_disable_lazy(self):
         _lazy.USE_LAZY = True
-        gettextutils.enable_lazy(False)
+        _lazy.enable_lazy(False)
         self.assertFalse(_lazy.USE_LAZY)

@@ -23,9 +23,10 @@ from oslotest import base as test_base
 from oslotest import moxstubout
 import six
 
+from oslo.i18n import _factory
+from oslo.i18n import _gettextutils
 from oslo.i18n import _lazy
 from oslo.i18n import _message
-from oslo.i18n import gettextutils
 
 
 LOG = logging.getLogger(__name__)
@@ -40,7 +41,7 @@ class GettextTest(test_base.BaseTestCase):
         self.mox = moxfixture.mox
         # remember so we can reset to it later in case it changes
         self._USE_LAZY = _lazy.USE_LAZY
-        self.t = gettextutils.TranslatorFactory('oslo.i18n.test')
+        self.t = _factory.TranslatorFactory('oslo.i18n.test')
 
     def tearDown(self):
         # reset to value before test
@@ -50,14 +51,14 @@ class GettextTest(test_base.BaseTestCase):
     def test_gettext_does_not_blow_up(self):
         LOG.info(self.t.primary('test'))
 
-    def test_gettextutils_install(self):
-        gettextutils.install('blaa')
-        gettextutils.enable_lazy(False)
+    def test__gettextutils_install(self):
+        _gettextutils.install('blaa')
+        _lazy.enable_lazy(False)
         self.assertTrue(isinstance(self.t.primary('A String'),
                                    six.text_type))
 
-        gettextutils.install('blaa')
-        gettextutils.enable_lazy(True)
+        _gettextutils.install('blaa')
+        _lazy.enable_lazy(True)
         self.assertTrue(isinstance(self.t.primary('A Message'),
                                    _message.Message))
 
@@ -65,7 +66,7 @@ class GettextTest(test_base.BaseTestCase):
         with mock.patch('os.environ.get') as environ_get:
             with mock.patch('gettext.install'):
                 environ_get.return_value = '/foo/bar'
-                gettextutils.install('blaa')
+                _gettextutils.install('blaa')
                 environ_get.assert_calls([mock.call('BLAA_LOCALEDIR')])
 
     def test_gettext_install_updates_builtins(self):
@@ -74,14 +75,15 @@ class GettextTest(test_base.BaseTestCase):
                 environ_get.return_value = '/foo/bar'
                 if '_' in six.moves.builtins.__dict__:
                     del six.moves.builtins.__dict__['_']
-                gettextutils.install('blaa')
+                _gettextutils.install('blaa')
                 self.assertIn('_', six.moves.builtins.__dict__)
 
     def test_get_available_languages(self):
         # All the available languages for which locale data is available
         def _mock_locale_identifiers():
-            # 'zh', 'zh_Hant'. 'zh_Hant_HK', 'fil' all have aliases missing
-            # from babel but we add them in gettextutils, we test that here too
+            # 'zh', 'zh_Hant'. 'zh_Hant_HK', 'fil' all have aliases
+            # missing from babel but we add them in _gettextutils, we
+            # test that here too
             return ['zh', 'es', 'nl', 'fr', 'zh_Hant', 'zh_Hant_HK', 'fil']
 
         self.stubs.Set(localedata,
@@ -102,8 +104,8 @@ class GettextTest(test_base.BaseTestCase):
 
         # en_US should always be available no matter the domain
         # and it should also always be the first element since order matters
-        domain_1_languages = gettextutils.get_available_languages('domain_1')
-        domain_2_languages = gettextutils.get_available_languages('domain_2')
+        domain_1_languages = _gettextutils.get_available_languages('domain_1')
+        domain_2_languages = _gettextutils.get_available_languages('domain_2')
         self.assertEqual('en_US', domain_1_languages[0])
         self.assertEqual('en_US', domain_2_languages[0])
         # The domain languages should be included after en_US with
@@ -118,8 +120,8 @@ class GettextTest(test_base.BaseTestCase):
         self.assertIn('fr', domain_2_languages)
         self.assertIn('zh_Hant', domain_2_languages)
         self.assertIn('zh_TW', domain_2_languages)
-        self.assertEqual(2, len(gettextutils._AVAILABLE_LANGUAGES))
+        self.assertEqual(2, len(_gettextutils._AVAILABLE_LANGUAGES))
         # Now test an unknown domain, only en_US should be included
-        unknown_domain_languages = gettextutils.get_available_languages('huh')
+        unknown_domain_languages = _gettextutils.get_available_languages('huh')
         self.assertEqual(1, len(unknown_domain_languages))
         self.assertIn('en_US', unknown_domain_languages)

@@ -4,7 +4,7 @@
 
 Text messages the user sees via exceptions or API calls should be
 translated using
-:py:attr:`TranslatorFactory.primary <oslo.i18n.gettextutils.TranslatorFactory.primary>`, which should
+:py:attr:`TranslatorFactory.primary <oslo.i18n.TranslatorFactory.primary>`, which should
 be installed as ``_()`` in the integration module.
 
 .. seealso::
