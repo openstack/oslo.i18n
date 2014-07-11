@@ -16,6 +16,7 @@ Contents
    guidelines
    api
    contributing
+   history
 
 Indices and tables
 ==================
