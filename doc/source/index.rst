@@ -17,6 +17,7 @@ Contents
    api
    policy
    contributing
+   history
 
 Indices and tables
 ==================
