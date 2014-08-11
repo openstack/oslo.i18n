@@ -31,3 +31,8 @@ oslo.i18n.log
 .. automodule:: oslo.i18n.log
    :members:
 
+oslo.i18n.fixture
+=================
+
+.. automodule:: oslo.i18n.fixture
+   :members:
