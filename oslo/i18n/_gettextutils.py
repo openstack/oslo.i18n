@@ -45,11 +45,6 @@ def install(domain):
     NOVA_LOCALEDIR).
 
     :param domain: the translation domain
-    :param lazy: indicates whether or not to install the lazy _() function.
-                 The lazy _() introduces a way to do deferred translation
-                 of messages by installing a _ that builds Message objects,
-                 instead of strings, which can then be lazily translated into
-                 any available locale.
     """
     from six import moves
     tf = _factory.TranslatorFactory(domain)
