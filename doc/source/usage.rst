@@ -21,6 +21,8 @@ the marker functions the factory creates.
 
 ::
 
+    # app/i18n.py
+
 	from oslo import i18n
 
     _translators = i18n.TranslatorFactory(domain='myapp')
@@ -61,6 +63,43 @@ for each message:
    proper message catalog lookups. Calls to
    :func:`gettextutils.install` should be replaced with the
    application or library integration module described here.
+
+Handling hacking Objections to Imports
+======================================
+
+The OpenStack style guidelines prefer importing modules and accessing
+names from those modules after import, rather than importing the names
+directly. For example:
+
+::
+
+  # WRONG
+  from foo import bar
+
+  bar()
+
+  # RIGHT
+
+  import foo
+
+  foo.bar()
+
+The linting tool hacking_ will typically complain about importing
+names from within modules. It is acceptable to bypass this for the
+translation marker functions, because they must have specific names
+and their use pattern is dictated by the message catalog extraction
+tools rather than our style guidelines. To bypass the hacking check
+for imports from the integration module, add an import exception to
+``tox.ini``.
+
+For example::
+
+  # tox.ini
+  [hacking]
+  import_exceptions =
+    app.i18n
+
+.. _hacking: https://pypi.python.org/pypi/hacking
 
 .. _lazy-translation:
 
