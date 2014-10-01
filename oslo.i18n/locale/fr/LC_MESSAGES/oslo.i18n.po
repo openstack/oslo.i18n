@@ -1,0 +1,35 @@
+# French translations for oslo.i18n.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the oslo.i18n project.
+#
+# Translators:
+# Jonathan Dupart <jonathan+transifex@dupart.org>, 2014
+# Maxime COQUEREL <max.coquerel@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version:  oslo.i18n\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-10-01 06:00+0000\n"
+"PO-Revision-Date: 2014-09-25 09:36+0000\n"
+"Last-Translator: Jonathan Dupart <jonathan+transifex@dupart.org>\n"
+"Language-Team: French "
+"(http://www.transifex.com/projects/p/osloi18n/language/fr/)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.3\n"
+
+#: oslo/i18n/_message.py:153
+msgid "Message objects do not support addition."
+msgstr "Les objects message ne supportent pas l'ajout."
+
+#: oslo/i18n/_message.py:164
+msgid ""
+"Message objects do not support str() because they may contain non-ascii "
+"characters. Please use unicode() or translate() instead."
+msgstr ""
+"Les objets message ne supportent pas str() car il peuvent contenir des "
+"caractères non-ascii. Merci d'utiliser unicode() ou translate() à la "
+"place."
+
