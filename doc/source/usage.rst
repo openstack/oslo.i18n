@@ -23,7 +23,7 @@ the marker functions the factory creates.
 
     # app/i18n.py
 
-	from oslo import i18n
+    from oslo import i18n
 
     _translators = i18n.TranslatorFactory(domain='myapp')
 
@@ -57,12 +57,12 @@ for each message:
 
 .. warning::
 
-   The old method of installing a version of ``_()`` in the builtins
-   namespace is deprecated. Modifying the global namespace affects
-   libraries as well as the application, so it may interfere with
-   proper message catalog lookups. Calls to
-   :func:`gettextutils.install` should be replaced with the
-   application or library integration module described here.
+    The old method of installing a version of ``_()`` in the builtins
+    namespace is deprecated. Modifying the global namespace affects
+    libraries as well as the application, so it may interfere with
+    proper message catalog lookups. Calls to
+    :func:`gettextutils.install` should be replaced with the
+    application or library integration module described here.
 
 Handling hacking Objections to Imports
 ======================================
@@ -73,16 +73,16 @@ directly. For example:
 
 ::
 
-  # WRONG
-  from foo import bar
+    # WRONG
+    from foo import bar
 
-  bar()
+    bar()
 
-  # RIGHT
+    # RIGHT
 
-  import foo
+    import foo
 
-  foo.bar()
+    foo.bar()
 
 The linting tool hacking_ will typically complain about importing
 names from within modules. It is acceptable to bypass this for the
@@ -94,10 +94,10 @@ for imports from the integration module, add an import exception to
 
 For example::
 
-  # tox.ini
-  [hacking]
-  import_exceptions =
-    app.i18n
+    # tox.ini
+    [hacking]
+    import_exceptions =
+      app.i18n
 
 .. _hacking: https://pypi.python.org/pypi/hacking
 
@@ -156,9 +156,9 @@ can be installed for each domain, the domain must be specified.
 
 ::
 
-      from oslo import i18n
+    from oslo import i18n
 
-      avail_lang = i18n.get_available_languages('myapp')
+    avail_lang = i18n.get_available_languages('myapp')
 
 .. seealso::
 
