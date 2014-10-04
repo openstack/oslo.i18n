@@ -97,7 +97,7 @@ to create partially translated messages.  For example, **do not do
 this**::
 
   # WRONG
-  raise ValueError(_('some message') + ': variable=%s') % variable)
+  raise ValueError(_('some message') + ': variable=%s' % variable)
 
 Instead, use this style::
 
