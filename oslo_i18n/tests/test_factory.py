@@ -18,9 +18,9 @@ import mock
 from oslotest import base as test_base
 import six
 
-from oslo.i18n import _factory
-from oslo.i18n import _lazy
-from oslo.i18n import _message
+from oslo_i18n import _factory
+from oslo_i18n import _lazy
+from oslo_i18n import _message
 
 
 class TranslatorFactoryTest(test_base.BaseTestCase):

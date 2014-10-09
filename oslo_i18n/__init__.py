@@ -10,4 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from oslo_i18n.log import *  # noqa
+from ._factory import *
+from ._gettextutils import *
+from ._lazy import *
+from ._translate import *

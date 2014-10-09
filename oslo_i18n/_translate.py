@@ -36,7 +36,7 @@ def translate(obj, desired_locale=None):
               it could not be translated
 
     """
-    from oslo.i18n import _message  # avoid circular dependency at module level
+    from oslo_i18n import _message  # avoid circular dependency at module level
     message = obj
     if not isinstance(message, _message.Message):
         # If the object to translate is not already translatable,

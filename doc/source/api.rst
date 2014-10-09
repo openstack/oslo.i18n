@@ -2,12 +2,12 @@
  API
 =====
 
-oslo.i18n
+oslo_i18n
 =========
 
-.. automodule:: oslo.i18n
+.. automodule:: oslo_i18n
 
-.. autoclass:: oslo.i18n.TranslatorFactory
+.. autoclass:: oslo_i18n.TranslatorFactory
    :members:
 
 .. seealso::
@@ -15,24 +15,24 @@ oslo.i18n
    An example of using a :class:`TranslatorFactory` is provided in
    :ref:`integration-module`.
 
-.. autofunction:: oslo.i18n.enable_lazy
+.. autofunction:: oslo_i18n.enable_lazy
 
 .. seealso::
 
    :ref:`lazy-translation`
 
-.. autofunction:: oslo.i18n.translate
+.. autofunction:: oslo_i18n.translate
 
-.. autofunction:: oslo.i18n.get_available_languages
+.. autofunction:: oslo_i18n.get_available_languages
 
-oslo.i18n.log
+oslo_i18n.log
 =============
 
-.. automodule:: oslo.i18n.log
+.. automodule:: oslo_i18n.log
    :members:
 
-oslo.i18n.fixture
+oslo_i18n.fixture
 =================
 
-.. automodule:: oslo.i18n.fixture
+.. automodule:: oslo_i18n.fixture
    :members:

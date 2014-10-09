@@ -15,8 +15,8 @@
 from oslotest import base as test_base
 import six
 
-from oslo.i18n import fixture
 from oslo_i18n import _message
+from oslo_i18n import fixture
 
 
 class FixtureTest(test_base.BaseTestCase):

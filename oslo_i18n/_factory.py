@@ -21,9 +21,9 @@ import os
 
 import six
 
-from oslo.i18n import _lazy
-from oslo.i18n import _locale
-from oslo.i18n import _message
+from oslo_i18n import _lazy
+from oslo_i18n import _locale
+from oslo_i18n import _message
 
 
 __all__ = [
@@ -75,7 +75,7 @@ class TranslatorFactory(object):
         m = t.gettext if six.PY3 else t.ugettext
 
         def f(msg):
-            """oslo.i18n.gettextutils translation function."""
+            """oslo_i18n.gettextutils translation function."""
             if _lazy.USE_LAZY:
                 return _message.Message(msg, domain=domain)
             return m(msg)

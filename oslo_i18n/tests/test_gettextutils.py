@@ -23,10 +23,10 @@ from oslotest import base as test_base
 from oslotest import moxstubout
 import six
 
-from oslo.i18n import _factory
-from oslo.i18n import _gettextutils
-from oslo.i18n import _lazy
-from oslo.i18n import _message
+from oslo_i18n import _factory
+from oslo_i18n import _gettextutils
+from oslo_i18n import _lazy
+from oslo_i18n import _message
 
 
 LOG = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ class GettextTest(test_base.BaseTestCase):
         self.mox = moxfixture.mox
         # remember so we can reset to it later in case it changes
         self._USE_LAZY = _lazy.USE_LAZY
-        self.t = _factory.TranslatorFactory('oslo.i18n.test')
+        self.t = _factory.TranslatorFactory('oslo_i18n.test')
 
     def tearDown(self):
         # reset to value before test

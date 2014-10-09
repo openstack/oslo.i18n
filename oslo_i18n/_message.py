@@ -23,8 +23,8 @@ import os
 
 import six
 
-from oslo.i18n import _locale
-from oslo.i18n import _translate
+from oslo_i18n import _locale
+from oslo_i18n import _translate
 
 
 class Message(six.text_type):
@@ -149,7 +149,7 @@ class Message(six.text_type):
             return six.text_type(param)
 
     def __add__(self, other):
-        from oslo.i18n._i18n import _
+        from oslo_i18n._i18n import _
         msg = _('Message objects do not support addition.')
         raise TypeError(msg)
 
@@ -160,7 +160,7 @@ class Message(six.text_type):
         def __str__(self):
             # NOTE(luisg): Logging in python 2.6 tries to str() log records,
             # and it expects specifically a UnicodeError in order to proceed.
-            from oslo.i18n._i18n import _
+            from oslo_i18n._i18n import _
             msg = _('Message objects do not support str() because they may '
                     'contain non-ascii characters. '
                     'Please use unicode() or translate() instead.')

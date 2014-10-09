@@ -1,3 +1,7 @@
+# Copyright 2012 Red Hat, Inc.
+# Copyright 2013 IBM Corp.
+# All Rights Reserved.
+#
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
 #    a copy of the License at
@@ -9,5 +13,13 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+"""Translation support for messages in this library.
+"""
 
-from oslo_i18n.log import *  # noqa
+from oslo_i18n import _factory
+
+# Create the global translation functions.
+_translators = _factory.TranslatorFactory('oslo_i18n')
+
+# The primary translation function using the well-known name "_"
+_ = _translators.primary

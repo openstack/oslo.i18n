@@ -19,10 +19,10 @@ from __future__ import unicode_literals
 import mock
 from oslotest import base as test_base
 
-from oslo.i18n import _message
-from oslo.i18n import _translate
-from tests import fakes
-from tests import utils
+from oslo_i18n import _message
+from oslo_i18n import _translate
+from oslo_i18n.tests import fakes
+from oslo_i18n.tests import utils
 
 
 class TranslateTest(test_base.BaseTestCase):
