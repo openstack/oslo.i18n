@@ -29,7 +29,10 @@ source code and pass it to the translation tool.
  CRITICAL   ``_LC()``
 ========== ==========
 
-.. note:: Debug level log messages are not translated.
+.. note::
+   * Debug level log messages are not translated.
+   * LOG.exception creates an ERROR level log, so when a marker function is
+     used (see below) ``_LE()`` should be used.
 
 Choosing a Marker Function
 ==========================
@@ -46,16 +49,23 @@ up to the individual translation teams and their users, but it is
 expected that they will work on critical and error messages before
 warning or info.
 
-Examples
---------
-
 ``_()`` is preferred for any user facing message, even if it is also
-going to a log file.
+going to a log file.  This ensures that the translated version of the
+message will be available to the user.
+
+The log marker functions (``_LI()``, ``_LW()``, ``_LE()``, and ``_LC()``)
+must only be used when the message is only sent directly to the log.
+Anytime that the message will be passed outside of the current context
+(for example as part of an exception) the ``_()`` marker function
+must be used.
 
 A common pattern is to define a single message object and use it more
-than once, for the log call and the exception. In that case, use
-``_()`` because the message is going to appear in an exception that
+than once, for the log call and the exception.  In that case, ``_()``
+must be used because the message is going to appear in an exception that
 may be presented to the user.
+
+Examples
+--------
 
 **Do not do this**::
 
@@ -144,8 +154,8 @@ This allows the logging package to skip creating the formatted log
 message if the message is not going to be emitted because of the
 current log level.
 
-Avoid Forcing the  Translation of Translatable Variables
-========================================================
+Avoid Forcing the Translation of Translatable Variables
+=======================================================
 
 Translation can also be delayed for variables that potentially contain
 translatable objects such as exceptions.

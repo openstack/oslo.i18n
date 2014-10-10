@@ -53,7 +53,26 @@ for each message:
 
     # ...
 
-    raise RuntimeError(_('exception message'))
+    try:
+
+        # ...
+
+    except AnException1:
+
+        # Log only
+        LOG.exception(_LE('exception message'))
+
+    except AnException2:
+
+        # Raise only
+        raise RuntimeError(_('exception message'))
+
+    else:
+
+        # Log and Raise
+        msg = _('Unexpected error message')
+        LOG.exception(msg)
+        raise RuntimeError(msg)
 
 .. warning::
 
