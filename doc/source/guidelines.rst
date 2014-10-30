@@ -12,6 +12,36 @@ be installed as ``_()`` in the integration module.
    * :doc:`usage`
    * :doc:`api`
 
+Gettext Contextual Form and Plural Form
+=======================================
+
+Sometimes under different contexts, the same word should be
+translated into different phrases using
+:py:attr:`TranslatorFactory.contextual_form <oslo_i18n.TranslatorFactory.contextual_form>`.
+
+And recommend the following code to use contextual form::
+
+  # The contextual translation function using the name "_C"
+  _C = _translators.contextual_form
+
+  ...
+  msg = _C('context', 'string')
+
+In some languages, sometimes the translated strings are different
+with different item counts using
+:py:attr:`TranslatorFactory.plural_form <oslo_i18n.TranslatorFactory.plural_form>`
+
+And recommend the following code to use plural form::
+
+  # The plural translation function using the name "_P"
+  _P = _translators.plural_form
+
+  ...
+  msg = _P('single', 'plural', count)
+
+The contextual form and plural form are used only when needed.
+By default, the translation should use the ``_()``.
+
 Log Translation
 ===============
 
