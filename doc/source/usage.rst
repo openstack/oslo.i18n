@@ -74,6 +74,14 @@ for each message:
         LOG.exception(msg)
         raise RuntimeError(msg)
 
+.. note::
+
+   Libraries probably do not want to expose the new integration module
+   as part of their public API, so rather than naming it
+   ``mylib.i18n`` it should be called ``mylib._i18n`` to indicate that
+   it is a private implementation detail, and not meant to be used
+   outside of the library's own code.
+
 .. warning::
 
     The old method of installing a version of ``_()`` in the builtins
