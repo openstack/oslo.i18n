@@ -43,7 +43,7 @@ the marker functions the factory creates.
 Then, in the rest of your code, use the appropriate marker function
 for each message:
 
-::
+.. code-block:: python
 
     from myapp.i18n import _, _LW
 
