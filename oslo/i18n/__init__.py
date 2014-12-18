@@ -10,7 +10,22 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from ._factory import *
-from ._gettextutils import *
-from ._lazy import *
-from ._translate import *
+import warnings
+
+from oslo_i18n._factory import *
+from oslo_i18n._gettextutils import *
+from oslo_i18n._lazy import *
+from oslo_i18n._translate import *
+
+
+def deprecated():
+    new_name = __name__.replace('.', '_')
+    warnings.warn(
+        ('The oslo namespace package is deprecated. Please use %s instead.' %
+         new_name),
+        DeprecationWarning,
+        stacklevel=3,
+    )
+
+
+deprecated()

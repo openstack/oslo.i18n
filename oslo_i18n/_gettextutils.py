@@ -24,8 +24,8 @@ import os
 from babel import localedata
 import six
 
-from oslo.i18n import _factory
-from oslo.i18n import _locale
+from oslo_i18n import _factory
+from oslo_i18n import _locale
 
 __all__ = [
     'install',

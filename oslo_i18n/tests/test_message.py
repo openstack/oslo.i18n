@@ -23,9 +23,9 @@ from oslotest import base as test_base
 import six
 import testtools
 
-from oslo.i18n import _message
-from tests import fakes
-from tests import utils
+from oslo_i18n import _message
+from oslo_i18n.tests import fakes
+from oslo_i18n.tests import utils
 
 LOG = logging.getLogger(__name__)
 

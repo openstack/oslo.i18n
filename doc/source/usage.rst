@@ -16,16 +16,16 @@ Creating an Integration Module
 
 To use oslo.i18n in a project, you will need to create a small
 integration module to hold an instance of
-:class:`~oslo.i18n.TranslatorFactory` and references to
+:class:`~oslo_i18n.TranslatorFactory` and references to
 the marker functions the factory creates.
 
 ::
 
     # app/i18n.py
 
-    from oslo import i18n
+    import oslo_i18n
 
-    _translators = i18n.TranslatorFactory(domain='myapp')
+    _translators = oslo_i18n.TranslatorFactory(domain='myapp')
 
     # The primary translation function using the well-known name "_"
     _ = _translators.primary
@@ -151,14 +151,14 @@ To enable lazy translation, call :func:`enable_lazy`.
 
 ::
 
-    from oslo import i18n
+    import oslo_i18n
 
-    i18n.enable_lazy()
+    oslo_i18n.enable_lazy()
 
 Translating Messages
 ====================
 
-Use :func:`~oslo.i18n.translate` to translate strings to
+Use :func:`~oslo_i18n.translate` to translate strings to
 a specific locale. :func:`translate` handles delayed translation and
 strings that have already been translated immediately. It should be
 used at the point where the locale to be used is known, which is often
@@ -167,9 +167,9 @@ emitted.
 
 ::
 
-    from oslo import i18n
+    import oslo_i18n
 
-    trans_msg = i18n.translate(msg, desired_locale=my_locale)
+    trans_msg = oslo_i18n.translate(msg, desired_locale=my_locale)
 
 if desired_locale is not specified then the default locale is used.
 
@@ -178,14 +178,14 @@ Available Languages
 
 Only the languages that have translations provided are available for
 translation. To determine which languages are available the
-:func:`~oslo.i18n.get_available_languages` is provided. Since different languages
+:func:`~oslo_i18n.get_available_languages` is provided. Since different languages
 can be installed for each domain, the domain must be specified.
 
 ::
 
-    from oslo import i18n
+    import oslo_i18n
 
-    avail_lang = i18n.get_available_languages('myapp')
+    avail_lang = oslo_i18n.get_available_languages('myapp')
 
 .. seealso::
 

@@ -14,27 +14,29 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import mock
 from oslotest import base as test_base
 
-from oslo.i18n import _lazy
+from oslo_i18n import _factory
 
 
-class LazyTest(test_base.BaseTestCase):
+class LogLevelTranslationsTest(test_base.BaseTestCase):
 
-    def setUp(self):
-        super(LazyTest, self).setUp()
-        self._USE_LAZY = _lazy.USE_LAZY
+    def test_info(self):
+        self._test('info')
 
-    def tearDown(self):
-        _lazy.USE_LAZY = self._USE_LAZY
-        super(LazyTest, self).tearDown()
+    def test_warning(self):
+        self._test('warning')
 
-    def test_enable_lazy(self):
-        _lazy.USE_LAZY = False
-        _lazy.enable_lazy()
-        self.assertTrue(_lazy.USE_LAZY)
+    def test_error(self):
+        self._test('error')
 
-    def test_disable_lazy(self):
-        _lazy.USE_LAZY = True
-        _lazy.enable_lazy(False)
-        self.assertFalse(_lazy.USE_LAZY)
+    def test_critical(self):
+        self._test('critical')
+
+    def _test(self, level):
+        with mock.patch.object(_factory.TranslatorFactory,
+                               '_make_translation_func') as mtf:
+            tf = _factory.TranslatorFactory('domain')
+            getattr(tf, 'log_%s' % level)
+            mtf.assert_called_with('domain-log-%s' % level)

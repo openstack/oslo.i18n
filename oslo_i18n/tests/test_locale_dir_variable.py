@@ -15,7 +15,7 @@
 from oslotest import base as test_base
 import testscenarios.testcase
 
-from oslo.i18n import _locale
+from oslo_i18n import _locale
 
 
 class LocaleDirVariableTest(testscenarios.testcase.WithScenarios,
