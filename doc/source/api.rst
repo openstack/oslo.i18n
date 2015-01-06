@@ -36,3 +36,4 @@ oslo_i18n.fixture
 
 .. automodule:: oslo_i18n.fixture
    :members:
+   :special-members:
