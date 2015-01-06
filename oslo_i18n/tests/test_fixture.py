@@ -15,14 +15,15 @@
 from oslotest import base as test_base
 import six
 
+from oslo_i18n import _lazy
 from oslo_i18n import _message
 from oslo_i18n import fixture
 
 
-class FixtureTest(test_base.BaseTestCase):
+class TranslationFixtureTest(test_base.BaseTestCase):
 
     def setUp(self):
-        super(FixtureTest, self).setUp()
+        super(TranslationFixtureTest, self).setUp()
         self.trans_fixture = self.useFixture(fixture.Translation())
 
     def test_lazy(self):
@@ -36,3 +37,38 @@ class FixtureTest(test_base.BaseTestCase):
         self.assertFalse(isinstance(msg, _message.Message))
         self.assertIsInstance(msg, six.text_type)
         self.assertEqual(msg, u'this is a lazy message')
+
+
+class ToggleLazyFixtureText(test_base.BaseTestCase):
+
+    def test_on_on(self):
+        _lazy.USE_LAZY = True
+        f = fixture.ToggleLazy(True)
+        f.setUp()
+        self.assertTrue(_lazy.USE_LAZY)
+        f._restore_original()
+        self.assertTrue(_lazy.USE_LAZY)
+
+    def test_on_off(self):
+        _lazy.USE_LAZY = True
+        f = fixture.ToggleLazy(False)
+        f.setUp()
+        self.assertFalse(_lazy.USE_LAZY)
+        f._restore_original()
+        self.assertTrue(_lazy.USE_LAZY)
+
+    def test_off_on(self):
+        _lazy.USE_LAZY = False
+        f = fixture.ToggleLazy(True)
+        f.setUp()
+        self.assertTrue(_lazy.USE_LAZY)
+        f._restore_original()
+        self.assertFalse(_lazy.USE_LAZY)
+
+    def test_off_off(self):
+        _lazy.USE_LAZY = False
+        f = fixture.ToggleLazy(False)
+        f.setUp()
+        self.assertFalse(_lazy.USE_LAZY)
+        f._restore_original()
+        self.assertFalse(_lazy.USE_LAZY)
