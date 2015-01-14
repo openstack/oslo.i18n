@@ -13,6 +13,8 @@
 
 """
 
+import gettext
+
 import fixtures
 import six
 
@@ -87,3 +89,77 @@ class ToggleLazy(fixtures.Fixture):
 
     def _restore_original(self):
         _lazy.enable_lazy(self._original_value)
+
+
+class _PrefixTranslator(gettext.NullTranslations):
+    """Translator that adds prefix to message ids
+
+    NOTE: gettext.NullTranslations is an old style class
+
+    :parm prefix: prefix to add to message id.  If not specified (None)
+                  then 'noprefix' is used.
+    :type prefix: string
+
+    """
+
+    def __init__(self, fp=None, prefix='noprefix'):
+        gettext.NullTranslations.__init__(self, fp)
+        self.prefix = prefix
+
+    def gettext(self, message):
+        msg = gettext.NullTranslations.gettext(self, message)
+        return self.prefix + msg
+
+    def ugettext(self, message):
+        msg = gettext.NullTranslations.ugettext(self, message)
+        return self.prefix + msg
+
+
+def _prefix_translations(*x, **y):
+    """Use message id prefixed with domain and language as translation
+
+    """
+    return _PrefixTranslator(prefix=x[0] + '/' + y['languages'][0] + ': ')
+
+
+class PrefixLazyTranslation(fixtures.Fixture):
+    """Fixture to prefix lazy translation enabled messages
+
+    Use of this fixture will cause messages supporting lazy translation to
+    be replaced with the message id prefixed with 'domain/language:'.
+    For example, 'oslo/en_US: message about something'.  It will also
+    override the available languages returned from
+    oslo_18n.get_available_languages to the specified languages.
+
+    This will enable tests to ensure that messages were translated lazily
+    with the specified language and not immediately with the default language.
+
+    NOTE that this does not work unless lazy translation is enabled, so it
+    uses the ToggleLazy fixture to enable lazy translation.
+
+    :param languages: list of languages to support.  If not specified (None)
+                      then ['en_US'] is used.
+    :type languages: list of strings
+
+    """
+
+    _DEFAULT_LANG = 'en_US'
+
+    def __init__(self, languages=None):
+        super(PrefixLazyTranslation, self).__init__()
+        self.languages = languages or [PrefixLazyTranslation._DEFAULT_LANG]
+
+    def setUp(self):
+        super(PrefixLazyTranslation, self).setUp()
+        self.useFixture(ToggleLazy(True))
+        self.useFixture(fixtures.MonkeyPatch(
+            'oslo_i18n._gettextutils.get_available_languages',
+            lambda *x, **y: self.languages))
+        self.useFixture(fixtures.MonkeyPatch(
+            'oslo.i18n.get_available_languages',
+            lambda *x, **y: self.languages))
+        self.useFixture(fixtures.MonkeyPatch(
+            'oslo_i18n.get_available_languages',
+            lambda *x, **y: self.languages))
+        self.useFixture(fixtures.MonkeyPatch('gettext.translation',
+                                             _prefix_translations))
