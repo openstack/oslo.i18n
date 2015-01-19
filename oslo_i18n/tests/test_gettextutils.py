@@ -103,6 +103,9 @@ class GettextTest(test_base.BaseTestCase):
             return None
         self.stubs.Set(gettext, 'find', _mock_gettext_find)
 
+        # Ensure that no domains are cached
+        _gettextutils._AVAILABLE_LANGUAGES = {}
+
         # en_US should always be available no matter the domain
         # and it should also always be the first element since order matters
         domain_1_languages = _gettextutils.get_available_languages('domain_1')
