@@ -167,12 +167,12 @@ a format string.
 For example, **do not do this**::
 
   # WRONG
-  LOG.info(_LI('some message: exception=%s', six.text_type(exc)))
+  LOG.info(_LI('some message: exception=%s'), six.text_type(exc))
 
 Instead, use this style::
 
   # RIGHT
-  LOG.info(_LI('some message: exception=%s', exc))
+  LOG.info(_LI('some message: exception=%s'), exc)
 
 This allows the translation of the translatable replacement text to be
 delayed until the message is translated.
