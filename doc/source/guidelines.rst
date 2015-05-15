@@ -34,6 +34,27 @@ source code and pass it to the translation tool.
    * LOG.exception creates an ERROR level log, so when a marker function is
      used (see below) ``_LE()`` should be used.
 
+
+Using a Marker Function
+=======================
+The marker functions are used to mark the translatable strings in the
+code.  The strings are extracted into catalogs using a tool that
+looks for these specific markers, so the function argument must just
+be a string.
+
+For example: **do not do this**::
+
+  # WRONG
+  msg = _(variable_containing_msg)
+  w_msg = _LW(variable_warning_msg)
+
+Instead, use this style::
+
+  # RIGHT
+  msg = _('My message.')
+  w_msg = _LW('My warning message')
+
+
 Choosing a Marker Function
 ==========================
 
@@ -64,10 +85,7 @@ than once, for the log call and the exception.  In that case, ``_()``
 must be used because the message is going to appear in an exception that
 may be presented to the user.
 
-Examples
---------
-
-**Do not do this**::
+For example, **do not do this**::
 
   # WRONG
   msg = _LE('There was an error.')
@@ -84,7 +102,12 @@ Instead, use this style::
 Except in the case above, ``_()`` should not be used for translating
 log messages. This avoids having the same string in two message
 catalogs, possibly translated differently by two different
-translators.
+translators.  The log message will translate properly because when
+the message is not found in the log specific catalog the ``_()``
+catalog will be used.
+
+If a common message is not being used, they should each be treated
+separately with respect to choosing a marker function.
 
 For example, **do not do this**::
 
