@@ -156,7 +156,7 @@ class PrefixLazyTranslation(fixtures.Fixture):
             'oslo_i18n._gettextutils.get_available_languages',
             lambda *x, **y: self.languages))
         self.useFixture(fixtures.MonkeyPatch(
-            'oslo.i18n.get_available_languages',
+            'oslo_i18n.get_available_languages',
             lambda *x, **y: self.languages))
         self.useFixture(fixtures.MonkeyPatch(
             'oslo_i18n.get_available_languages',

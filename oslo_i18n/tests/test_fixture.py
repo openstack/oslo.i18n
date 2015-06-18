@@ -15,8 +15,7 @@
 from oslotest import base as test_base
 import six
 
-from oslo import i18n as old_i18n
-import oslo_i18n as new_i18n
+import oslo_i18n
 from oslo_i18n import _gettextutils
 from oslo_i18n._i18n import _
 from oslo_i18n import _lazy
@@ -95,11 +94,9 @@ class PrefixLazyTranslationTest(test_base.BaseTestCase):
         expected_msg = 'oslo.i18n/' + default_lang + ': ' + raw_id1
         msg1 = _(raw_id1)    # noqa
         self.assertEqual([default_lang],
-                         _gettextutils.get_available_languages('oslo'))
+                         _gettextutils.get_available_languages('oslo.i18n'))
         self.assertEqual([default_lang],
-                         old_i18n.get_available_languages('oslo'))
-        self.assertEqual([default_lang],
-                         new_i18n.get_available_languages('oslo'))
+                         oslo_i18n.get_available_languages('oslo.i18n'))
         self.assertEqual(expected_msg, _translate.translate(msg1))
 
     def test_extra_lang(self):
@@ -113,11 +110,9 @@ class PrefixLazyTranslationTest(test_base.BaseTestCase):
         expected_msg_en_ZZ = 'oslo.i18n/' + _FAKE_LANG + ': ' + raw_id1
         msg1 = _(raw_id1)     # noqa
         self.assertEqual(languages,
-                         _gettextutils.get_available_languages('oslo'))
+                         _gettextutils.get_available_languages('oslo.i18n'))
         self.assertEqual(languages,
-                         old_i18n.get_available_languages('oslo'))
-        self.assertEqual(languages,
-                         new_i18n.get_available_languages('oslo'))
+                         oslo_i18n.get_available_languages('oslo.i18n'))
         self.assertEqual(expected_msg_en_US, _translate.translate(msg1))
         self.assertEqual(expected_msg_en_ZZ,
                          _translate.translate(msg1,
