@@ -74,6 +74,10 @@ for each message:
         LOG.exception(msg)
         raise RuntimeError(msg)
 
+It is important to use the marker functions, rather than the longer
+form of the name, because the tool that scans the source code for
+translatable strings looks for the marker function names.
+
 .. note::
 
    Libraries probably do not want to expose the new integration module

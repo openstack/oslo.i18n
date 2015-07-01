@@ -2,10 +2,13 @@
  Guidelines for Use In OpenStack
 =================================
 
-Text messages the user sees via exceptions or API calls should be
-translated using
-:py:attr:`TranslatorFactory.primary <oslo_i18n.TranslatorFactory.primary>`, which should
-be installed as ``_()`` in the integration module.
+The OpenStack I18N team has a limited capacity to translate messages,
+so we want to make their work as effective as possible by identifying
+the most useful text for them to translate.  All text messages *the
+user sees* via exceptions or API calls should be marked for
+translation. However, some exceptions are used internally to signal
+error conditions between modules and are not intended to be presented
+to the user. Those do not need to be translated.
 
 .. seealso::
 
