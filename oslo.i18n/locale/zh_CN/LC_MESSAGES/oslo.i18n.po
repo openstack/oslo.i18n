@@ -1,5 +1,5 @@
 # Chinese (Simplified, China) translations for oslo.i18n.
-# Copyright (C) 2014 ORGANIZATION
+# Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the oslo.i18n project.
 #
 # Translators:
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  oslo.i18n\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-11-20 06:04+0000\n"
+"POT-Creation-Date: 2015-07-01 06:01+0000\n"
 "PO-Revision-Date: 2014-11-20 00:40+0000\n"
 "Last-Translator: Xiao Xi LIU <liuxx@cn.ibm.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/osloi18n/"
@@ -26,5 +26,5 @@ msgid ""
 "Message objects do not support str() because they may contain non-ascii "
 "characters. Please use unicode() or translate() instead."
 msgstr ""
-"消息对象不支持str()方法，因其可能包含非ascii字符。请用unicode()或者translate"
-"()代替。"
+"消息对象不支持str()方法，因其可能包含非ascii字符。请用unicode()或者"
+"translate()代替。"
