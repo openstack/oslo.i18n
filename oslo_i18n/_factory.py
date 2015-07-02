@@ -31,7 +31,7 @@ __all__ = [
 ]
 
 # magic gettext number to separate context from message
-CONTEXT_SEPARATOR = "\x04"
+CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 
 
 class TranslatorFactory(object):
