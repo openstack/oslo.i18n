@@ -22,6 +22,9 @@ from oslo_i18n import _factory
 from oslo_i18n import _lazy
 from oslo_i18n import _message
 
+# magic gettext number to separate context from message
+CONTEXT_SEPARATOR = "\x04"
+
 
 class TranslatorFactoryTest(test_base.BaseTestCase):
 
@@ -89,3 +92,57 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
             tf = _factory.TranslatorFactory('domain')
             tf._make_log_translation_func('mylevel')
             mtf.assert_called_with('domain-log-mylevel')
+
+    def test_contextual_form_py2(self):
+        _lazy.enable_lazy(False)
+        with mock.patch.object(six, 'PY3', False):
+            with mock.patch('gettext.translation') as translation:
+                trans = mock.Mock()
+                translation.return_value = trans
+                trans.gettext.side_effect = AssertionError(
+                    'should have called ugettext')
+                trans.ugettext.return_value = "some text"
+                tf = _factory.TranslatorFactory('domain')
+                tf.contextual_form('context', 'some text')
+                trans.ugettext.assert_called_with(
+                    "%s%s%s" % ('context', CONTEXT_SEPARATOR, 'some text'))
+
+    def test_contextual_form_py3(self):
+        _lazy.enable_lazy(False)
+        with mock.patch.object(six, 'PY3', True):
+            with mock.patch('gettext.translation') as translation:
+                trans = mock.Mock()
+                translation.return_value = trans
+                trans.ugettext.side_effect = AssertionError(
+                    'should have called gettext')
+                trans.gettext.return_value = "some text"
+                tf = _factory.TranslatorFactory('domain')
+                tf.contextual_form('context', 'some text')
+                trans.gettext.assert_called_with(
+                    "%s%s%s" % ('context', CONTEXT_SEPARATOR, 'some text'))
+
+    def test_plural_form_py2(self):
+        _lazy.enable_lazy(False)
+        with mock.patch.object(six, 'PY3', False):
+            with mock.patch('gettext.translation') as translation:
+                trans = mock.Mock()
+                translation.return_value = trans
+                trans.ngettext.side_effect = AssertionError(
+                    'should have called ungettext')
+                tf = _factory.TranslatorFactory('domain')
+                tf.plural_form('single', 'plural', 1)
+                trans.ungettext.assert_called_with(
+                    'single', 'plural', 1)
+
+    def test_plural_form_py3(self):
+        _lazy.enable_lazy(False)
+        with mock.patch.object(six, 'PY3', True):
+            with mock.patch('gettext.translation') as translation:
+                trans = mock.Mock()
+                translation.return_value = trans
+                trans.ungettext.side_effect = AssertionError(
+                    'should have called ngettext')
+                tf = _factory.TranslatorFactory('domain')
+                tf.plural_form('single', 'plural', 1)
+                trans.ngettext.assert_called_with(
+                    'single', 'plural', 1)

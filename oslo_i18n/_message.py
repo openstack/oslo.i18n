@@ -26,6 +26,9 @@ import six
 from oslo_i18n import _locale
 from oslo_i18n import _translate
 
+# magic gettext number to separate context from message
+CONTEXT_SEPARATOR = "\x04"
+
 
 class Message(six.text_type):
     """A Message object is a unicode object that can be translated.
@@ -36,7 +39,8 @@ class Message(six.text_type):
     """
 
     def __new__(cls, msgid, msgtext=None, params=None,
-                domain='oslo', *args):
+                domain='oslo', has_contextual_form=False,
+                has_plural_form=False, *args):
         """Create a new Message object.
 
         In order for translation to work gettext requires a message ID, this
@@ -55,6 +59,8 @@ class Message(six.text_type):
         msg.msgid = msgid
         msg.domain = domain
         msg.params = params
+        msg.has_contextual_form = has_contextual_form
+        msg.has_plural_form = has_plural_form
         return msg
 
     def translate(self, desired_locale=None):
@@ -69,7 +75,10 @@ class Message(six.text_type):
 
         translated_message = Message._translate_msgid(self.msgid,
                                                       self.domain,
-                                                      desired_locale)
+                                                      desired_locale,
+                                                      self.has_contextual_form,
+                                                      self.has_plural_form)
+
         if self.params is None:
             # No need for more translation
             return translated_message
@@ -86,7 +95,8 @@ class Message(six.text_type):
         return translated_message
 
     @staticmethod
-    def _translate_msgid(msgid, domain, desired_locale=None):
+    def _translate_msgid(msgid, domain, desired_locale=None,
+                         has_contextual_form=False, has_plural_form=False):
         if not desired_locale:
             system_locale = locale.getdefaultlocale()
             # If the system locale is not available to the runtime use English
@@ -99,10 +109,41 @@ class Message(six.text_type):
                                    localedir=locale_dir,
                                    languages=[desired_locale],
                                    fallback=True)
-        translator = lang.gettext if six.PY3 else lang.ugettext
 
-        translated_message = translator(msgid)
-        return translated_message
+        # Primary translation function
+        if not has_contextual_form and not has_plural_form:
+            translator = lang.gettext if six.PY3 else lang.ugettext
+
+            translated_message = translator(msgid)
+            return translated_message
+
+        # Contextual translation function
+        if has_contextual_form and not has_plural_form:
+            (msgctx, msgtxt) = msgid
+            translator = lang.gettext if six.PY3 else lang.ugettext
+
+            msg_with_ctx = "%s%s%s" % (msgctx, CONTEXT_SEPARATOR, msgtxt)
+            translated_message = translator(msg_with_ctx)
+
+            if CONTEXT_SEPARATOR in translated_message:
+                # Translation not found
+                translated_message = msgtxt
+
+            return translated_message
+
+        # Plural translation function
+        if not has_contextual_form and has_plural_form:
+            (msgsingle, msgplural, msgcount) = msgid
+            translator = lang.ngettext if six.PY3 else lang.ungettext
+
+            translated_message = translator(msgsingle, msgplural, msgcount)
+            return translated_message
+
+        # Reserved for contextual and plural translation function
+        if has_contextual_form and has_plural_form:
+            raise ValueError("Unimplemented.")
+
+        raise TypeError("Unknown msgid type.")
 
     def __mod__(self, other):
         # When we mod a Message we want the actual operation to be performed

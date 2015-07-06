@@ -30,6 +30,9 @@ __all__ = [
     'TranslatorFactory',
 ]
 
+# magic gettext number to separate context from message
+CONTEXT_SEPARATOR = "\x04"
+
 
 class TranslatorFactory(object):
     "Create translator functions"
@@ -81,10 +84,98 @@ class TranslatorFactory(object):
             return m(msg)
         return f
 
+    def _make_contextual_translation_func(self, domain=None):
+        """Return a translation function ready for use with context messages.
+
+        The returned function takes two values, the context of
+        the unicode string, the unicode string to be translated.
+        The returned type is the same as
+        :method:`TranslatorFactory._make_translation_func`.
+
+        The domain argument is the same as
+        :method:`TranslatorFactory._make_translation_func`.
+
+        """
+        if domain is None:
+            domain = self.domain
+        t = gettext.translation(domain,
+                                localedir=self.localedir,
+                                fallback=True)
+        # Use the appropriate method of the translation object based
+        # on the python version.
+        m = t.gettext if six.PY3 else t.ugettext
+
+        def f(ctx, msg):
+            """oslo.i18n.gettextutils translation with context function."""
+            if _lazy.USE_LAZY:
+                msgid = (ctx, msg)
+                return _message.Message(msgid, domain=domain,
+                                        has_contextual_form=True)
+
+            msgctx = "%s%s%s" % (ctx, CONTEXT_SEPARATOR, msg)
+            s = m(msgctx)
+            if CONTEXT_SEPARATOR in s:
+                # Translation not found
+                return msg
+            return s
+        return f
+
+    def _make_plural_translation_func(self, domain=None):
+        """Return a plural translation function ready for use with messages.
+
+        The returned function takes three values, the single form of
+        the unicode string, the plural form of the unicode string,
+        the count of items to be translated.
+        The returned type is the same as
+        :method:`TranslatorFactory._make_translation_func`.
+
+        The domain argument is the same as
+        :method:`TranslatorFactory._make_translation_func`.
+
+        """
+        if domain is None:
+            domain = self.domain
+        t = gettext.translation(domain,
+                                localedir=self.localedir,
+                                fallback=True)
+        # Use the appropriate method of the translation object based
+        # on the python version.
+        m = t.ngettext if six.PY3 else t.ungettext
+
+        def f(msgsingle, msgplural, msgcount):
+            """oslo.i18n.gettextutils plural translation function."""
+            if _lazy.USE_LAZY:
+                msgid = (msgsingle, msgplural, msgcount)
+                return _message.Message(msgid, domain=domain,
+                                        has_plural_form=True)
+            return m(msgsingle, msgplural, msgcount)
+        return f
+
     @property
     def primary(self):
         "The default translation function."
         return self._make_translation_func()
+
+    @property
+    def contextual_form(self):
+        """The contextual translation function.
+
+        The returned function takes two values, the context of
+        the unicode string, the unicode string to be translated.
+
+        """
+        return self._make_contextual_translation_func()
+
+    @property
+    def plural_form(self):
+        """The plural translation function.
+
+        The returned function takes three values, the single form of
+        the unicode string, the plural form of the unicode string,
+        the count of items to be translated.
+
+        """
+        return self._make_plural_translation_func()
 
     def _make_log_translation_func(self, level):
         return self._make_translation_func(self.domain + '-log-' + level)
