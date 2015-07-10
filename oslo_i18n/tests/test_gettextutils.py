@@ -67,7 +67,7 @@ class GettextTest(test_base.BaseTestCase):
             with mock.patch('gettext.install'):
                 environ_get.return_value = '/foo/bar'
                 _gettextutils.install('blaa')
-                environ_get.assert_calls([mock.call('BLAA_LOCALEDIR')])
+                environ_get.assert_has_calls([mock.call('BLAA_LOCALEDIR')])
 
     def test_gettext_install_updates_builtins(self):
         with mock.patch('os.environ.get') as environ_get:
