@@ -23,7 +23,7 @@ from oslo_i18n import _lazy
 from oslo_i18n import _message
 
 # magic gettext number to separate context from message
-CONTEXT_SEPARATOR = "\x04"
+CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 
 
 class TranslatorFactoryTest(test_base.BaseTestCase):
