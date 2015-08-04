@@ -110,15 +110,17 @@ class Message(six.text_type):
                                    languages=[desired_locale],
                                    fallback=True)
 
-        # Primary translation function
         if not has_contextual_form and not has_plural_form:
+            # This is the most common case, so check it first.
             translator = lang.gettext if six.PY3 else lang.ugettext
-
             translated_message = translator(msgid)
-            return translated_message
 
-        # Contextual translation function
-        if has_contextual_form and not has_plural_form:
+        elif has_contextual_form and has_plural_form:
+            # Reserved for contextual and plural translation function,
+            # which is not yet implemented.
+            raise ValueError("Unimplemented.")
+
+        elif has_contextual_form:
             (msgctx, msgtxt) = msgid
             translator = lang.gettext if six.PY3 else lang.ugettext
 
@@ -126,24 +128,15 @@ class Message(six.text_type):
             translated_message = translator(msg_with_ctx)
 
             if CONTEXT_SEPARATOR in translated_message:
-                # Translation not found
+                # Translation not found, use the original text
                 translated_message = msgtxt
 
-            return translated_message
-
-        # Plural translation function
-        if not has_contextual_form and has_plural_form:
+        elif has_plural_form:
             (msgsingle, msgplural, msgcount) = msgid
             translator = lang.ngettext if six.PY3 else lang.ungettext
-
             translated_message = translator(msgsingle, msgplural, msgcount)
-            return translated_message
 
-        # Reserved for contextual and plural translation function
-        if has_contextual_form and has_plural_form:
-            raise ValueError("Unimplemented.")
-
-        raise TypeError("Unknown msgid type.")
+        return translated_message
 
     def __mod__(self, other):
         # When we mod a Message we want the actual operation to be performed
