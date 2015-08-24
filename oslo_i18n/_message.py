@@ -19,6 +19,7 @@
 import copy
 import gettext
 import locale
+import logging
 import os
 
 import six
@@ -28,6 +29,9 @@ from oslo_i18n import _translate
 
 # magic gettext number to separate context from message
 CONTEXT_SEPARATOR = "\x04"
+
+
+LOG = logging.getLogger(__name__)
 
 
 class Message(six.text_type):
@@ -90,9 +94,7 @@ class Message(six.text_type):
         translated_params = _translate.translate_args(self.params,
                                                       desired_locale)
 
-        translated_message = translated_message % translated_params
-
-        return translated_message
+        return self._safe_translate(translated_message, translated_params)
 
     @staticmethod
     def _translate_msgid(msgid, domain, desired_locale=None,
@@ -138,12 +140,32 @@ class Message(six.text_type):
 
         return translated_message
 
+    def _safe_translate(self, translated_message, translated_params):
+        try:
+            translated_message = translated_message % translated_params
+        except (KeyError, TypeError) as err:
+            # KeyError for parameters named in the translated_message
+            # but not found in translated_params and TypeError for
+            # type strings that do not match the type of the
+            # parameter.
+            #
+            # Log the error translating the message and use the
+            # original message string so the translator's bad message
+            # catalog doesn't break the caller.
+            LOG.debug(
+                (u'Failed to insert replacement values into translated '
+                 u'message %s (Original: %r): %s'),
+                translated_message, self.msgid, err)
+            translated_message = self.msgid % translated_params
+
+        return translated_message
+
     def __mod__(self, other):
         # When we mod a Message we want the actual operation to be performed
         # by the parent class (i.e. unicode()), the only thing  we do here is
         # save the original msgid and the parameters in case of a translation
         params = self._sanitize_mod_params(other)
-        unicode_mod = super(Message, self).__mod__(params)
+        unicode_mod = self._safe_translate(six.text_type(self), params)
         modded = Message(self.msgid,
                          msgtext=unicode_mod,
                          params=params,

@@ -157,6 +157,41 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(expected, result)
         self.assertEqual(expected, result.translate())
 
+    def test_mod_with_wrong_field_type_in_trans(self):
+        msgid = "Correct type %(arg1)s"
+        params = {'arg1': 'test1'}
+        with mock.patch('gettext.translation') as trans:
+            # Set up ugettext to return the original message with the
+            # correct format string.
+            trans.return_value.ugettext.return_value = msgid
+            # Build a message and give it some parameters.
+            result = _message.Message(msgid) % params
+            # Now set up ugettext to return the translated version of
+            # the original message, with a bad format string.
+            wrong_type = u'Wrong type %(arg1)d'
+            if six.PY3:
+                trans.return_value.gettext.return_value = wrong_type
+            else:
+                trans.return_value.ugettext.return_value = wrong_type
+            trans_result = result.translate()
+            expected = msgid % params
+            self.assertEqual(expected, trans_result)
+
+    def test_mod_with_wrong_field_type(self):
+        msgid = "Test that we handle unused args %(arg1)d"
+        params = {'arg1': 'test1'}
+
+        self.assertRaises(TypeError, lambda: _message.Message(msgid) % params)
+
+    def test_mod_with_missing_arg(self):
+        msgid = "Test that we handle missing args %(arg1)s %(arg2)s"
+        params = {'arg1': 'test1'}
+
+        e = self.assertRaises(KeyError,
+                              lambda: _message.Message(msgid) % params)
+        self.assertIn('arg2', six.text_type(e),
+                      'Missing key \'arg2\' was not flagged')
+
     def test_mod_with_integer_parameters(self):
         msgid = "Some string with params: %d"
         params = [0, 1, 10, 24124]
@@ -258,16 +293,6 @@ class MessageTestCase(test_base.BaseTestCase):
         # Make sure unused params still there
         self.assertEqual(result.params.keys(), params.keys())
 
-    def test_mod_with_missing_named_parameters(self):
-        msgid = ("Some string with params: %(param1)s %(param2)s"
-                 " and a missing one %(missing)s")
-        params = {'param1': 'test',
-                  'param2': 'test2'}
-
-        test_me = lambda: _message.Message(msgid) % params
-        # Just like with strings missing named parameters raise KeyError
-        self.assertRaises(KeyError, test_me)
-
     def test_add_disabled(self):
         msgid = "A message"
         test_me = lambda: _message.Message(msgid) + ' some string'
@@ -351,6 +376,59 @@ class MessageTestCase(test_base.BaseTestCase):
         expected_translation = es_translation % param
         self.assertEqual(expected_translation, msg.translate('es'))
         self.assertEqual(default_translation, msg.translate('XX'))
+
+    @mock.patch('gettext.translation')
+    @mock.patch('oslo_i18n._message.LOG')
+    def test_translate_message_bad_translation(self, mock_log,
+                                               mock_translation):
+        message_with_params = 'A message: %s'
+        es_translation = 'A message in Spanish: %s %s'
+        param = 'A Message param'
+
+        translations = {message_with_params: es_translation}
+        translator = fakes.FakeTranslations.translator({'es': translations})
+        mock_translation.side_effect = translator
+
+        msg = _message.Message(message_with_params)
+        msg = msg % param
+        self.assertFalse(mock_log.debug.called)
+
+        default_translation = message_with_params % param
+        self.assertEqual(default_translation, msg.translate('es'))
+        mock_log.debug.assert_called_with(('Failed to insert replacement '
+                                           'values into translated message %s '
+                                           '(Original: %r): %s'),
+                                          es_translation,
+                                          message_with_params,
+                                          mock.ANY)
+
+    @mock.patch('gettext.translation')
+    @mock.patch('locale.getdefaultlocale', return_value=('es', ''))
+    @mock.patch('oslo_i18n._message.LOG')
+    def test_translate_message_bad_default_translation(self, mock_log,
+                                                       mock_local,
+                                                       mock_translation):
+        message_with_params = 'A message: %s'
+        es_translation = 'A message in Spanish: %s %s'
+        param = 'A Message param'
+
+        translations = {message_with_params: es_translation}
+        translator = fakes.FakeTranslations.translator({'es': translations})
+        mock_translation.side_effect = translator
+
+        msg = _message.Message(message_with_params)
+        msg = msg % param
+        mock_log.debug.assert_called_with(('Failed to insert replacement '
+                                           'values into translated message %s '
+                                           '(Original: %r): %s'),
+                                          es_translation,
+                                          message_with_params,
+                                          mock.ANY)
+        mock_log.reset_mock()
+
+        default_translation = message_with_params % param
+        self.assertEqual(default_translation, msg)
+        self.assertFalse(mock_log.debug.called)
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_object_param(self, mock_translation):
