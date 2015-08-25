@@ -21,6 +21,7 @@ import gettext
 import locale
 import logging
 import os
+import warnings
 
 import six
 
@@ -141,6 +142,18 @@ class Message(six.text_type):
         return translated_message
 
     def _safe_translate(self, translated_message, translated_params):
+        """Trap translation errors and fall back to default translation.
+
+        :param translated_message: the requested translation
+
+        :param translated_params: the params to be inserted
+
+        :return: if parameter insertion is successful then it is the
+                 translated_message with the translated_params inserted, if the
+                 requested translation fails then it is the default translation
+                 with the params
+        """
+
         try:
             translated_message = translated_message % translated_params
         except (KeyError, TypeError) as err:
@@ -152,17 +165,21 @@ class Message(six.text_type):
             # Log the error translating the message and use the
             # original message string so the translator's bad message
             # catalog doesn't break the caller.
-            LOG.debug(
-                (u'Failed to insert replacement values into translated '
-                 u'message %s (Original: %r): %s'),
-                translated_message, self.msgid, err)
+            # Do not translate this log message even if it is used as a
+            # warning message as a wrong translation of this message could
+            # cause infinite recursion
+            msg = (u'Failed to insert replacement values into translated '
+                   u'message %s (Original: %r): %s')
+            warnings.warn(msg % (translated_message, self.msgid, err))
+            LOG.debug(msg, translated_message, self.msgid, err)
+
             translated_message = self.msgid % translated_params
 
         return translated_message
 
     def __mod__(self, other):
         # When we mod a Message we want the actual operation to be performed
-        # by the parent class (i.e. unicode()), the only thing  we do here is
+        # by the base class (i.e. unicode()), the only thing  we do here is
         # save the original msgid and the parameters in case of a translation
         params = self._sanitize_mod_params(other)
         unicode_mod = self._safe_translate(six.text_type(self), params)
