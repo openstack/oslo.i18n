@@ -4,4 +4,4 @@ source = i18n
 omit = i18n/tests/*,i18n/openstack/*
 
 [report]
-ignore-errors = True
+ignore_errors = True
