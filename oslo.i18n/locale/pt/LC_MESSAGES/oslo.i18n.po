@@ -3,21 +3,23 @@
 # This file is distributed under the same license as the oslo.i18n project.
 #
 # Translators:
-# MMSRS, 2015
+# MMSRS <h_manuela_rodsilva@gmail.com>, 2015
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version:  oslo.i18n\n"
+"Project-Id-Version: oslo.i18n 2.6.1.dev4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-13 06:02+0000\n"
-"PO-Revision-Date: 2015-08-11 17:02+0000\n"
-"Last-Translator: MMSRS\n"
+"POT-Creation-Date: 2015-09-26 06:01+0000\n"
+"PO-Revision-Date: 2015-08-11 05:02+0000\n"
+"Last-Translator: MMSRS <h_manuela_rodsilva@gmail.com>\n"
+"Language: pt\n"
 "Language-Team: Portuguese (http://www.transifex.com/openstack/osloi18n/"
 "language/pt/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.0\n"
+"Generated-By: Babel 2.1.1\n"
 
 msgid "Message objects do not support addition."
 msgstr "Os objetos de mensagem não suportam a adição."

@@ -4,20 +4,22 @@
 #
 # Translators:
 # Sungjin Kang <potopro@gmail.com>, 2014
+# OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version:  oslo.i18n\n"
+"Project-Id-Version: oslo.i18n 2.6.1.dev4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-08-04 06:16+0000\n"
-"PO-Revision-Date: 2014-09-24 16:32+0000\n"
+"POT-Creation-Date: 2015-09-26 06:01+0000\n"
+"PO-Revision-Date: 2014-09-24 04:32+0000\n"
 "Last-Translator: Sungjin Kang <potopro@gmail.com>\n"
+"Language: ko_KR\n"
 "Language-Team: Korean (Korea) (http://www.transifex.com/openstack/osloi18n/"
 "language/ko_KR/)\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.0\n"
+"Generated-By: Babel 2.1.1\n"
 
 msgid "Message objects do not support addition."
 msgstr "메시지 객체는 추가 지원을하지 않습니다."
