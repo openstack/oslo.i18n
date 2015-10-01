@@ -1,7 +1,8 @@
 [run]
 branch = True
-source = i18n
-omit = i18n/tests/*,i18n/openstack/*
+source = oslo_i18n
+omit = oslo_i18n/tests/*
 
 [report]
 ignore_errors = True
+precision = 2
