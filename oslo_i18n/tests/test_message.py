@@ -17,6 +17,7 @@
 from __future__ import unicode_literals
 
 import logging
+import warnings
 
 import mock
 from oslotest import base as test_base
@@ -181,16 +182,15 @@ class MessageTestCase(test_base.BaseTestCase):
         msgid = "Test that we handle unused args %(arg1)d"
         params = {'arg1': 'test1'}
 
-        self.assertRaises(TypeError, lambda: _message.Message(msgid) % params)
+        with testtools.ExpectedException(TypeError):
+            _message.Message(msgid) % params
 
     def test_mod_with_missing_arg(self):
         msgid = "Test that we handle missing args %(arg1)s %(arg2)s"
         params = {'arg1': 'test1'}
 
-        e = self.assertRaises(KeyError,
-                              lambda: _message.Message(msgid) % params)
-        self.assertIn('arg2', six.text_type(e),
-                      'Missing key \'arg2\' was not flagged')
+        with testtools.ExpectedException(KeyError, '.*arg2.*'):
+            _message.Message(msgid) % params
 
     def test_mod_with_integer_parameters(self):
         msgid = "Some string with params: %d"
@@ -379,7 +379,8 @@ class MessageTestCase(test_base.BaseTestCase):
 
     @mock.patch('gettext.translation')
     @mock.patch('oslo_i18n._message.LOG')
-    def test_translate_message_bad_translation(self, mock_log,
+    def test_translate_message_bad_translation(self,
+                                               mock_log,
                                                mock_translation):
         message_with_params = 'A message: %s'
         es_translation = 'A message in Spanish: %s %s'
@@ -389,15 +390,27 @@ class MessageTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator({'es': translations})
         mock_translation.side_effect = translator
 
-        msg = _message.Message(message_with_params)
-        msg = msg % param
-        self.assertFalse(mock_log.debug.called)
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            msg = _message.Message(message_with_params)
+            msg = msg % param
+            default_translation = message_with_params % param
 
-        default_translation = message_with_params % param
-        self.assertEqual(default_translation, msg.translate('es'))
+            self.assertEqual(default_translation, msg.translate('es'))
+
+            self.assertEqual(1, len(w))
+            # Note(gibi): in python 3.4 str.__repr__ does not put the unicode
+            # marker 'u' in front of the string representations so the test
+            # removes that to have the same result in python 2.7 and 3.4
+            self.assertEqual("Failed to insert replacement values into "
+                             "translated message A message in Spanish: %s %s "
+                             "(Original: 'A message: %s'): "
+                             "not enough arguments for format string",
+                             str(w[0].message).replace("u'", "'"))
+
         mock_log.debug.assert_called_with(('Failed to insert replacement '
-                                           'values into translated message %s '
-                                           '(Original: %r): %s'),
+                                           'values into translated message '
+                                           '%s (Original: %r): %s'),
                                           es_translation,
                                           message_with_params,
                                           mock.ANY)
@@ -405,7 +418,8 @@ class MessageTestCase(test_base.BaseTestCase):
     @mock.patch('gettext.translation')
     @mock.patch('locale.getdefaultlocale', return_value=('es', ''))
     @mock.patch('oslo_i18n._message.LOG')
-    def test_translate_message_bad_default_translation(self, mock_log,
+    def test_translate_message_bad_default_translation(self,
+                                                       mock_log,
                                                        mock_local,
                                                        mock_translation):
         message_with_params = 'A message: %s'
@@ -417,10 +431,23 @@ class MessageTestCase(test_base.BaseTestCase):
         mock_translation.side_effect = translator
 
         msg = _message.Message(message_with_params)
-        msg = msg % param
+
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            msg = msg % param
+            self.assertEqual(1, len(w))
+            # Note(gibi): in python 3.4 str.__repr__ does not put the unicode
+            # marker 'u' in front of the string representations so the test
+            # removes that to have the same result in python 2.7 and 3.4
+            self.assertEqual("Failed to insert replacement values into "
+                             "translated message A message in Spanish: %s %s "
+                             "(Original: 'A message: %s'): "
+                             "not enough arguments for format string",
+                             str(w[0].message).replace("u'", "'"))
+
         mock_log.debug.assert_called_with(('Failed to insert replacement '
-                                           'values into translated message %s '
-                                           '(Original: %r): %s'),
+                                           'values into translated message '
+                                           '%s (Original: %r): %s'),
                                           es_translation,
                                           message_with_params,
                                           mock.ANY)
@@ -428,7 +455,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         default_translation = message_with_params % param
         self.assertEqual(default_translation, msg)
-        self.assertFalse(mock_log.debug.called)
+        self.assertFalse(mock_log.warning.called)
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_object_param(self, mock_translation):
