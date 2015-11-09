@@ -14,18 +14,28 @@ At the command line::
 Creating an Integration Module
 ==============================
 
-To use oslo.i18n in a project, you will need to create a small
-integration module to hold an instance of
+To use oslo.i18n in a project (e.g. myapp), you will need to create a
+small integration module to hold an instance of
 :class:`~oslo_i18n.TranslatorFactory` and references to
 the marker functions the factory creates.
 
-::
+.. note::
 
-    # app/i18n.py
+   Libraries probably do not want to expose the new integration module
+   as part of their public API, so rather than naming it
+   ``myapp.i18n`` it should be called ``myapp._i18n`` to indicate that
+   it is a private implementation detail, and not meant to be used
+   outside of the library's own code.
+
+.. code-block:: python
+
+    # myapp/_i18n.py
 
     import oslo_i18n
 
-    _translators = oslo_i18n.TranslatorFactory(domain='myapp')
+    DOMAIN="myapp"
+
+    _translators = oslo_i18n.TranslatorFactory(domain=DOMAIN)
 
     # The primary translation function using the well-known name "_"
     _ = _translators.primary
@@ -46,16 +56,20 @@ the marker functions the factory creates.
     _LE = _translators.log_error
     _LC = _translators.log_critical
 
+    def get_available_languages():
+        return oslo_i18n.get_available_languages(DOMAIN)
+
 Then, in the rest of your code, use the appropriate marker function
 for each message:
 
 .. code-block:: python
 
-    from myapp.i18n import _, _LW
+    from myapp._i18n import _, _LW, _LE
 
     # ...
 
-    LOG.warn(_LW('warning message: %s'), var)
+    variable = "openstack"
+    LOG.warning(_LW('warning message: %s'), variable)
 
     # ...
 
@@ -80,17 +94,17 @@ for each message:
         LOG.exception(msg)
         raise RuntimeError(msg)
 
-It is important to use the marker functions, rather than the longer
-form of the name, because the tool that scans the source code for
-translatable strings looks for the marker function names.
-
 .. note::
 
-   Libraries probably do not want to expose the new integration module
-   as part of their public API, so rather than naming it
-   ``mylib.i18n`` it should be called ``mylib._i18n`` to indicate that
-   it is a private implementation detail, and not meant to be used
-   outside of the library's own code.
+   The import of multiple modules from _i18n on a single line is
+   a valid exception to
+   `OpenStack Style Guidelines <http://docs.openstack.org/developer/hacking/#imports>`_
+   for import statements.
+
+
+It is important to use the marker functions (e.g. _LI), rather than
+the longer form of the name, because the tool that scans the source
+code for translatable strings looks for the marker function names.
 
 .. warning::
 
@@ -104,9 +118,9 @@ translatable strings looks for the marker function names.
 Handling hacking Objections to Imports
 ======================================
 
-The OpenStack style guidelines prefer importing modules and accessing
-names from those modules after import, rather than importing the names
-directly. For example:
+The `OpenStack Style Guidelines <http://docs.openstack.org/developer/hacking/#imports>`_
+prefer importing modules and accessing names from those modules after
+import, rather than importing the names directly. For example:
 
 ::
 
@@ -126,15 +140,14 @@ names from within modules. It is acceptable to bypass this for the
 translation marker functions, because they must have specific names
 and their use pattern is dictated by the message catalog extraction
 tools rather than our style guidelines. To bypass the hacking check
-for imports from the integration module, add an import exception to
+for imports from this integration module, add an import exception to
 ``tox.ini``.
 
 For example::
 
     # tox.ini
     [hacking]
-    import_exceptions =
-      app.i18n
+    import_exceptions = myapp._i18n
 
 .. _hacking: https://pypi.python.org/pypi/hacking
 
@@ -179,23 +192,23 @@ emitted.
 
     import oslo_i18n
 
-    trans_msg = oslo_i18n.translate(msg, desired_locale=my_locale)
+    trans_msg = oslo_i18n.translate(msg, my_locale)
 
-if desired_locale is not specified then the default locale is used.
+If a locale is not specified the default locale is used.
 
 Available Languages
 ===================
 
 Only the languages that have translations provided are available for
 translation. To determine which languages are available the
-:func:`~oslo_i18n.get_available_languages` is provided. Since different languages
-can be installed for each domain, the domain must be specified.
+:func:`~oslo_i18n.get_available_languages` is provided. The integration
+module provides a domain defined specific function.
 
-::
+.. code-block:: python
 
-    import oslo_i18n
+    import myapp._i18n
 
-    avail_lang = oslo_i18n.get_available_languages('myapp')
+    languages = myapp._i18n.get_available_languages()
 
 .. seealso::
 
