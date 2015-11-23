@@ -37,8 +37,7 @@ class TranslationFixtureTest(test_base.BaseTestCase):
 
     def test_immediate(self):
         msg = self.trans_fixture.immediate('this is a lazy message')
-        # Python 2.6 does not have assertNotIsInstance
-        self.assertFalse(isinstance(msg, _message.Message))
+        self.assertNotIsInstance(msg, _message.Message)
         self.assertIsInstance(msg, six.text_type)
         self.assertEqual(msg, u'this is a lazy message')
 

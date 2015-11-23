@@ -59,8 +59,7 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
         self.assertIsInstance(r, _message.Message)
         _lazy.enable_lazy(False)
         r = tf.primary('some text')
-        # Python 2.6 doesn't have assertNotIsInstance().
-        self.assertFalse(isinstance(r, _message.Message))
+        self.assertNotIsInstance(r, _message.Message)
 
     def test_py2(self):
         _lazy.enable_lazy(False)
