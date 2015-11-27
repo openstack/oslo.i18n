@@ -33,7 +33,7 @@ the marker functions the factory creates.
 
     import oslo_i18n
 
-    DOMAIN="myapp"
+    DOMAIN = "myapp"
 
     _translators = oslo_i18n.TranslatorFactory(domain=DOMAIN)
 
