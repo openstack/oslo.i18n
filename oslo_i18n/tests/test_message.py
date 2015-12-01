@@ -303,12 +303,6 @@ class MessageTestCase(test_base.BaseTestCase):
         test_me = lambda: utils.SomeObject('test') + _message.Message(msgid)
         self.assertRaises(TypeError, test_me)
 
-    @testtools.skipIf(six.PY3, 'test specific to Python 2')
-    def test_str_disabled(self):
-        msgid = "A message"
-        test_me = lambda: str(_message.Message(msgid))
-        self.assertRaises(UnicodeError, test_me)
-
     @mock.patch('gettext.translation')
     def test_translate(self, mock_translation):
         en_message = 'A message in the default locale'
