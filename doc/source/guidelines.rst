@@ -45,6 +45,9 @@ And recommend the following code to use plural form::
 The contextual form and plural form are used only when needed.
 By default, the translation should use the ``_()``.
 
+.. note::
+   These two functions were only available in oslo.i18n >= 2.1.0.
+
 Log Translation
 ===============
 

@@ -41,9 +41,11 @@ the marker functions the factory creates.
     _ = _translators.primary
 
     # The contextual translation function using the name "_C"
+    # requires oslo.i18n >=2.1.0
     _C = _translators.contextual_form
 
     # The plural translation function using the name "_P"
+    # requires oslo.i18n >=2.1.0
     _P = _translators.plural_form
 
     # Translators for log levels.
