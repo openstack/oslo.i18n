@@ -163,6 +163,8 @@ class TranslatorFactory(object):
         The returned function takes two values, the context of
         the unicode string, the unicode string to be translated.
 
+        .. versionadded:: 2.1.0
+
         """
         return self._make_contextual_translation_func()
 
@@ -173,6 +175,8 @@ class TranslatorFactory(object):
         The returned function takes three values, the single form of
         the unicode string, the plural form of the unicode string,
         the count of items to be translated.
+
+        .. versionadded:: 2.1.0
 
         """
         return self._make_plural_translation_func()
