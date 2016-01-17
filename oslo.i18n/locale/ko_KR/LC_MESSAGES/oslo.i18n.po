@@ -1,4 +1,4 @@
-# Korean (South Korea) translations for oslo.i18n.
+# Translations template for oslo.i18n.
 # Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the oslo.i18n project.
 #
@@ -7,25 +7,19 @@
 # OpenStack Infra <zanata@openstack.org>, 2015. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: oslo.i18n 2.7.1.dev1\n"
+"Project-Id-Version: oslo.i18n 3.1.1.dev4\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2015-10-23 06:00+0000\n"
+"POT-Creation-Date: 2016-01-07 02:03+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-09-24 04:32+0000\n"
 "Last-Translator: Sungjin Kang <potopro@gmail.com>\n"
-"Language: ko_KR\n"
+"Language: ko-KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Generated-By: Babel 2.0\n"
+"X-Generator: Zanata 3.7.3\n"
 "Language-Team: Korean (South Korea)\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.1.1\n"
 
 msgid "Message objects do not support addition."
 msgstr "메시지 객체는 추가 지원을하지 않습니다."
-
-msgid ""
-"Message objects do not support str() because they may contain non-ascii "
-"characters. Please use unicode() or translate() instead."
-msgstr ""
-"Non-ascii 문자를 포함할 수 있기에 메시지 객체는 str()를 지원하지 않습니다. 대"
-"신 unicode()나 translate()를 사용하십시오."
