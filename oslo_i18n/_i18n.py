@@ -19,7 +19,7 @@
 from oslo_i18n import _factory
 
 # Create the global translation functions.
-_translators = _factory.TranslatorFactory('oslo.i18n')
+_translators = _factory.TranslatorFactory('oslo_i18n')
 
 # The primary translation function using the well-known name "_"
 _ = _translators.primary
