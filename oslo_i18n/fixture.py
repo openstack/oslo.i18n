@@ -145,9 +145,10 @@ class PrefixLazyTranslation(fixtures.Fixture):
 
     _DEFAULT_LANG = 'en_US'
 
-    def __init__(self, languages=None):
+    def __init__(self, languages=None, locale=None):
         super(PrefixLazyTranslation, self).__init__()
         self.languages = languages or [PrefixLazyTranslation._DEFAULT_LANG]
+        self.locale = locale
 
     def setUp(self):
         super(PrefixLazyTranslation, self).setUp()
@@ -158,8 +159,7 @@ class PrefixLazyTranslation(fixtures.Fixture):
         self.useFixture(fixtures.MonkeyPatch(
             'oslo_i18n.get_available_languages',
             lambda *x, **y: self.languages))
-        self.useFixture(fixtures.MonkeyPatch(
-            'oslo_i18n.get_available_languages',
-            lambda *x, **y: self.languages))
         self.useFixture(fixtures.MonkeyPatch('gettext.translation',
                                              _prefix_translations))
+        self.useFixture(fixtures.MonkeyPatch('locale.getdefaultlocale',
+                                             lambda *x, **y: self.locale))
