@@ -103,7 +103,10 @@ class Message(six.text_type):
         if not desired_locale:
             system_locale = locale.getdefaultlocale()
             # If the system locale is not available to the runtime use English
-            desired_locale = system_locale[0] or 'en_US'
+            if not system_locale or not system_locale[0]:
+                desired_locale = 'en_US'
+            else:
+                desired_locale = system_locale[0]
 
         locale_dir = os.environ.get(
             _locale.get_locale_dir_variable_name(domain)
