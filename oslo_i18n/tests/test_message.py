@@ -85,8 +85,8 @@ class MessageTestCase(test_base.BaseTestCase):
         result = _message.Message(msgid) % params
 
         expected = msgid % params
-        self.assertEqual(result, expected)
-        self.assertEqual(result.translate(), expected)
+        self.assertEqual(expected, result)
+        self.assertEqual(expected, result.translate())
 
     def test_multiple_mod_with_named_parameter(self):
         msgid = ("%(description)s\nCommand: %(cmd)s\n"
@@ -145,8 +145,8 @@ class MessageTestCase(test_base.BaseTestCase):
         result = _message.Message(msgid) % params
 
         expected = msgid % params
-        self.assertEqual(result, expected)
-        self.assertEqual(result.translate(), expected)
+        self.assertEqual(expected, result)
+        self.assertEqual(expected, result.translate())
 
     def test_mod_with_dict_parameter(self):
         msgid = "Test that we can inject a dictionary %s"
@@ -204,12 +204,12 @@ class MessageTestCase(test_base.BaseTestCase):
 
         for message, result in zip(messages, results):
             self.assertEqual(type(result), _message.Message)
-            self.assertEqual(result.translate(), message)
+            self.assertEqual(message, result.translate())
 
             # simulate writing out as string
             result_str = '%s' % result.translate()
             self.assertEqual(result_str, message)
-            self.assertEqual(result, message)
+            self.assertEqual(message, result)
 
     def test_mod_copies_parameters(self):
         msgid = "Found object: %(current_value)s"
@@ -220,7 +220,7 @@ class MessageTestCase(test_base.BaseTestCase):
         changing_dict['current_value'] = 2
         # Even if the param changes when the message is
         # translated it should use the original param
-        self.assertEqual(result.translate(), 'Found object: 1')
+        self.assertEqual('Found object: 1', result.translate())
 
     def test_mod_deep_copies_parameters(self):
         msgid = "Found list: %(current_list)s"
@@ -232,26 +232,26 @@ class MessageTestCase(test_base.BaseTestCase):
         changing_list.append(4)
         # Even though the list changed the message
         # translation should use the original list
-        self.assertEqual(result.translate(), "Found list: [1, 2, 3]")
+        self.assertEqual("Found list: [1, 2, 3]", result.translate())
 
     def test_mod_deep_copies_param_nodeep_param(self):
         msgid = "Value: %s"
         params = utils.NoDeepCopyObject(5)
         # Apply the params
         result = _message.Message(msgid) % params
-        self.assertEqual(result.translate(), "Value: 5")
+        self.assertEqual("Value: 5", result.translate())
 
     def test_mod_deep_copies_param_nodeep_dict(self):
         msgid = "Values: %(val1)s %(val2)s"
         params = {'val1': 1, 'val2': utils.NoDeepCopyObject(2)}
         # Apply the params
         result = _message.Message(msgid) % params
-        self.assertEqual(result.translate(), "Values: 1 2")
+        self.assertEqual("Values: 1 2", result.translate())
 
         # Apply again to make sure other path works as well
         params = {'val1': 3, 'val2': utils.NoDeepCopyObject(4)}
         result = _message.Message(msgid) % params
-        self.assertEqual(result.translate(), "Values: 3 4")
+        self.assertEqual("Values: 3 4", result.translate())
 
     def test_mod_returns_a_copy(self):
         msgid = "Some msgid string: %(test1)s %(test2)s"
@@ -287,11 +287,11 @@ class MessageTestCase(test_base.BaseTestCase):
         result = _message.Message(msgid) % params
 
         expected = msgid % params
-        self.assertEqual(result, expected)
-        self.assertEqual(result.translate(), expected)
+        self.assertEqual(expected, result)
+        self.assertEqual(expected, result.translate())
 
         # Make sure unused params still there
-        self.assertEqual(result.params.keys(), params.keys())
+        self.assertEqual(params.keys(), result.params.keys())
 
     def test_add_disabled(self):
         msgid = "A message"
