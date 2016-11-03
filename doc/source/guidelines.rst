@@ -149,13 +149,13 @@ For example, **do not do this**::
 
   # WRONG
   LOG.exception(_('There was an error.'))
-  raise LocalExceptionClass(_('An error occured.'))
+  raise LocalExceptionClass(_('An error occurred.'))
 
 Instead, use this style::
 
   # RIGHT
   LOG.exception(_LE('There was an error.'))
-  raise LocalExceptionClass(_('An error occured.'))
+  raise LocalExceptionClass(_('An error occurred.'))
 
 
 Adding Variables to Translated Messages
