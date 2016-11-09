@@ -216,3 +216,44 @@ module provides a domain defined specific function.
 .. seealso::
 
    * :doc:`guidelines`
+
+Displaying translated messages
+==============================
+
+Several preparations are required to display translated messages in your
+running application.
+
+Preferred language
+  You need to specify your preferred language through an environment variable.
+  The preferred language can be specified by ``LANGUAGE``, ``LC_ALL``,
+  ``LC_MESSAGES``, or ``LANGUAGE`` (A former one has a priority).
+
+  ``oslo_i18n.translate()`` can be used to translate a string to override the
+  preferred language.
+
+  .. note::
+
+     You need to use ``enable_lazy()`` to override the preferred language
+     by using ``oslo_i18n.translate()``.
+
+Locale directory
+  Python ``gettext`` looks for binary ``mo`` files for the given domain
+  using the path ``<localedir>/<language>/LC_MESSAGES/<domain>.mo``.
+  The default locale directory varies on distributions,
+  and it is ``/usr/share/locale`` in most cases.
+
+  If you store message catalogs in a different location,
+  you need to specify the location via an environment variable
+  named ``<DOMAIN>_LOCALEDIR`` where ``<DOMAIN>`` is an upper-case
+  domain name with replacing ``_`` and ``.`` with ``-``.
+  For example, ``NEUTRON_LOCALEDIR`` for a domain ``neutron`` and
+  ``OSLO_I18N_LOCALEDIR`` for a domain ``oslo_i18n``.
+
+  .. note::
+
+     When you specify locale directories via ``<DOMAIN>_LOCALEDIR``
+     environment variables, you need to specify an environment variable per
+     domain. More concretely, if your application using a domain ``myapp`
+     uses oslo.policy, you need to specify both ``MYAPP_LOCALEDIR`` and
+     ``OSLO_POLICY_LOCALEDIR`` to ensure that translation messages from
+     both your application and oslo.policy are displayed.
