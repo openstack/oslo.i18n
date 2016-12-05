@@ -22,7 +22,6 @@ import gettext
 import os
 
 from babel import localedata
-import six
 
 from oslo_i18n import _factory
 from oslo_i18n import _locale
@@ -82,7 +81,7 @@ def get_available_languages(domain):
                'zh_Hant': 'zh_TW',
                'fil': 'tl_PH'}
 
-    language_list.extend(alias for locale, alias in six.iteritems(aliases)
+    language_list.extend(alias for locale, alias in aliases.items()
                          if (locale in language_list and
                              alias not in language_list))
 
