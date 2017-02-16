@@ -80,10 +80,22 @@ def get_available_languages(domain):
                'zh_Hant_HK': 'zh_HK',
                'zh_Hant': 'zh_TW',
                'fil': 'tl_PH'}
-
     language_list.extend(alias for locale, alias in aliases.items()
                          if (locale in language_list and
                              alias not in language_list))
 
-    _AVAILABLE_LANGUAGES[domain] = language_list
-    return copy.copy(language_list)
+    language_list.extend(alias for locale, alias in aliases.items()
+                         if (locale not in language_list and
+                             find(alias)))
+
+    # In webob.acceptparse, the best_match is just match the first element in
+    # the language_list, so make the precise element in front
+    result = ['en_US']
+    for i in language_list[1:]:
+        if '_' in i:
+            result.insert(1, i)
+        else:
+            result.append(i)
+
+    _AVAILABLE_LANGUAGES[domain] = result
+    return copy.copy(result)
