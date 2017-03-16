@@ -51,6 +51,15 @@ By default, the translation should use the ``_()``.
 Log Translation
 ===============
 
+.. note::
+
+   Starting with the Pike series, OpenStack no longer supports log
+   translation. It is not necessary to add translation instructions to
+   new code, and the instructions can be removed from old code.  Refer
+   to the email thread `understanding log domain change
+   <http://lists.openstack.org/pipermail/openstack-dev/2017-March/thread.html#113365>`_
+   on the openstack-dev mailing list for more details.
+
 OpenStack supports translating some log levels using separate message
 catalogs, and so has separate marker functions. These well-known names
 are used by the build system jobs that extract the messages from the

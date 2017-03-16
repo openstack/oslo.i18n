@@ -27,6 +27,15 @@ the marker functions the factory creates.
    it is a private implementation detail, and not meant to be used
    outside of the library's own code.
 
+.. note::
+
+   Starting with the Pike series, OpenStack no longer supports log
+   translation. It is not necessary to add translation instructions to
+   new code, and the instructions can be removed from old code.  Refer
+   to the email thread `understanding log domain change
+   <http://lists.openstack.org/pipermail/openstack-dev/2017-March/thread.html#113365>`_
+   on the openstack-dev mailing list for more details.
+
 .. code-block:: python
 
     # myapp/_i18n.py
@@ -49,6 +58,9 @@ the marker functions the factory creates.
     _P = _translators.plural_form
 
     # Translators for log levels.
+    #
+    # NOTE(dhellmann): This is not needed for new projects as of the
+    # Pike series.
     #
     # The abbreviated names are meant to reflect the usual use of a short
     # name like '_'. The "L" is for "log" and the other letter comes from
@@ -117,6 +129,7 @@ code for translatable strings looks for the marker function names.
     proper message catalog lookups. Calls to
     :func:`gettextutils.install` should be replaced with the
     application or library integration module described here.
+
 
 Handling hacking Objections to Imports
 ======================================
