@@ -12,8 +12,8 @@ to the user. Those do not need to be translated.
 
 .. seealso::
 
-   * :doc:`usage`
-   * :doc:`api`
+   * :ref:`usage`
+   * :ref:`api`
 
 Gettext Contextual Form and Plural Form
 =======================================
