@@ -115,7 +115,7 @@ for each message:
 
    The import of multiple modules from _i18n on a single line is
    a valid exception to
-   `OpenStack Style Guidelines <http://docs.openstack.org/developer/hacking/#imports>`_
+   `OpenStack Style Guidelines <https://docs.openstack.org/hacking/latest/#imports>`_
    for import statements.
 
 
@@ -136,7 +136,7 @@ code for translatable strings looks for the marker function names.
 Handling hacking Objections to Imports
 ======================================
 
-The `OpenStack Style Guidelines <http://docs.openstack.org/developer/hacking/#imports>`_
+The `OpenStack Style Guidelines <https://docs.openstack.org/hacking/latest/#imports>`_
 prefer importing modules and accessing names from those modules after
 import, rather than importing the names directly. For example:
 
