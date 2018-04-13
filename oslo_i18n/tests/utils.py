@@ -36,7 +36,7 @@ class NoDeepCopyObject(object):
             return str(self.value)
     else:
         def __unicode__(self):
-            return unicode(self.value)
+            return six.text_type(self.value)
 
     def __deepcopy__(self, memo):
         raise TypeError('Deep Copy not supported')
