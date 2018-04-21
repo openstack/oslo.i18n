@@ -167,7 +167,7 @@ For example::
     [hacking]
     import_exceptions = myapp._i18n
 
-.. _hacking: https://pypi.python.org/pypi/hacking
+.. _hacking: https://pypi.org/project/hacking
 
 .. _lazy-translation:
 

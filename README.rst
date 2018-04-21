@@ -12,11 +12,11 @@ Team and repository tags
 ==================================================
 
 .. image:: https://img.shields.io/pypi/v/oslo.i18n.svg
-    :target: https://pypi.python.org/pypi/oslo.i18n/
+    :target: https://pypi.org/project/oslo.i18n/
     :alt: Latest Version
 
 .. image:: https://img.shields.io/pypi/dm/oslo.i18n.svg
-    :target: https://pypi.python.org/pypi/oslo.i18n/
+    :target: https://pypi.org/project/oslo.i18n/
     :alt: Downloads
 
 The oslo.i18n library contain utilities for working with
