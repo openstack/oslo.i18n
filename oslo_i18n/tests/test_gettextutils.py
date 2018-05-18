@@ -86,10 +86,12 @@ class GettextTest(test_base.BaseTestCase):
             # test that here too
             return ['zh', 'es', 'nl', 'fr', 'zh_Hant', 'zh_Hant_HK', 'fil']
 
-        self.stubs.Set(localedata,
-                       'list' if hasattr(localedata, 'list')
-                       else 'locale_identifiers',
-                       _mock_locale_identifiers)
+        mock_patcher = mock.patch.object(localedata,
+                                         'list' if hasattr(localedata, 'list')
+                                         else 'locale_identifiers',
+                                         _mock_locale_identifiers)
+        mock_patcher.start()
+        self.addCleanup(mock_patcher.stop)
 
         # Only the languages available for a specific translation domain
         def _mock_gettext_find(domain, localedir=None, languages=None, all=0):
@@ -101,7 +103,9 @@ class GettextTest(test_base.BaseTestCase):
                 return 'translation-file' if any(x in ['fr', 'zh_Hant']
                                                  for x in languages) else None
             return None
-        self.stubs.Set(gettext, 'find', _mock_gettext_find)
+        mock_patcher = mock.patch.object(gettext, 'find', _mock_gettext_find)
+        mock_patcher.start()
+        self.addCleanup(mock_patcher.stop)
 
         # Ensure that no domains are cached
         _gettextutils._AVAILABLE_LANGUAGES = {}
