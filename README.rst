@@ -27,3 +27,4 @@ strings in an application or library.
 * Documentation: https://docs.openstack.org/oslo.i18n/latest
 * Source: https://git.openstack.org/cgit/openstack/oslo.i18n
 * Bugs: https://bugs.launchpad.net/oslo.i18n
+* Release notes:  https://docs.openstack.org/releasenotes/oslo.i18n/
