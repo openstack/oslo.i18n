@@ -20,7 +20,6 @@ import logging
 from babel import localedata
 import mock
 from oslotest import base as test_base
-from oslotest import moxstubout
 import six
 
 from oslo_i18n import _factory
@@ -36,9 +35,6 @@ class GettextTest(test_base.BaseTestCase):
 
     def setUp(self):
         super(GettextTest, self).setUp()
-        moxfixture = self.useFixture(moxstubout.MoxStubout())
-        self.stubs = moxfixture.stubs
-        self.mox = moxfixture.mox
         # remember so we can reset to it later in case it changes
         self._USE_LAZY = _lazy.USE_LAZY
         self.t = _factory.TranslatorFactory('oslo_i18n.test')
