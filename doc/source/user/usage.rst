@@ -59,34 +59,22 @@ the marker functions the factory creates.
     # requires oslo.i18n >=2.1.0
     _P = _translators.plural_form
 
-    # Translators for log levels.
-    #
-    # NOTE(dhellmann): This is not needed for new projects as of the
-    # Pike series.
-    #
-    # The abbreviated names are meant to reflect the usual use of a short
-    # name like '_'. The "L" is for "log" and the other letter comes from
-    # the level.
-    _LI = _translators.log_info
-    _LW = _translators.log_warning
-    _LE = _translators.log_error
-    _LC = _translators.log_critical
-
-
     def get_available_languages():
         return oslo_i18n.get_available_languages(DOMAIN)
+
+.. TODO: Provide examples for _C and _P
 
 Then, in the rest of your code, use the appropriate marker function
 for each message:
 
 .. code-block:: python
 
-    from myapp._i18n import _, _LW, _LE
+    from myapp._i18n import _
 
     # ...
 
     variable = "openstack"
-    LOG.warning(_LW('warning message: %s'), variable)
+    some_object.name_msg = _('my name is: %s') % variable
 
     # ...
 
@@ -96,8 +84,8 @@ for each message:
 
     except AnException1:
 
-        # Log only
-        LOG.exception(_LE('exception message'))
+        # Log only, log messages are no longer translated
+        LOG.exception('exception message')
 
     except AnException2:
 
@@ -119,7 +107,7 @@ for each message:
    for import statements.
 
 
-It is important to use the marker functions (e.g. _LI), rather than
+It is important to use the marker functions (e.g. _), rather than
 the longer form of the name, because the tool that scans the source
 code for translatable strings looks for the marker function names.
 
