@@ -99,3 +99,29 @@ def get_available_languages(domain):
 
     _AVAILABLE_LANGUAGES[domain] = result
     return copy.copy(result)
+
+
+_original_find = gettext.find
+_FIND_CACHE = {}
+
+
+def cached_find(domain, localedir=None, languages=None, all=0):
+    """A version of gettext.find using a cache.
+
+    gettext.find looks for mo files on the disk using os.path.exists. Those
+    don't tend to change over time, but the system calls pile up with a
+    long-running service. This caches the result so that we return the same mo
+    files, and only call find once per domain.
+    """
+    key = (domain,
+           localedir,
+           tuple(languages) if languages is not None else None,
+           all)
+    if key in _FIND_CACHE:
+        return _FIND_CACHE[key]
+    result = _original_find(domain, localedir, languages, all)
+    _FIND_CACHE[key] = result
+    return result
+
+
+gettext.find = cached_find

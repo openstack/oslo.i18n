@@ -129,3 +129,13 @@ class GettextTest(test_base.BaseTestCase):
         unknown_domain_languages = _gettextutils.get_available_languages('huh')
         self.assertEqual(1, len(unknown_domain_languages))
         self.assertIn('en_US', unknown_domain_languages)
+
+    def test_cached_find(self):
+        domain = 'my-unique-domain'
+        key = (domain, None, None, 0)
+        self.assertNotIn(key, _gettextutils._FIND_CACHE)
+        gettext.find(domain)
+        self.assertIn(key, _gettextutils._FIND_CACHE)
+        _gettextutils._FIND_CACHE[key] = "spoof result"
+        self.assertEqual("spoof result", gettext.find(domain))
+        _gettextutils._FIND_CACHE.pop(key)
