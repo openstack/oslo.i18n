@@ -1,5 +1,5 @@
 =================================
- Guidelines for Use In OpenStack
+ Guidelines for Use in OpenStack
 =================================
 
 The OpenStack I18N team has a limited capacity to translate messages,
@@ -8,7 +8,8 @@ the most useful text for them to translate.  All text messages *the
 user sees* via exceptions or API calls should be marked for
 translation. However, some exceptions are used internally to signal
 error conditions between modules and are not intended to be presented
-to the user. Those do not need to be translated.
+to the user.  Those do not need to be translated.  Neither do log
+messages, as explained below.
 
 .. seealso::
 
@@ -55,15 +56,26 @@ Log Translation
 
    Starting with the Pike series, OpenStack no longer supports log
    translation. It is not necessary to add translation instructions to
-   new code, and the instructions can be removed from old code.  Refer
-   to the email thread `understanding log domain change
+   new code, and the instructions can be removed from old code.  The
+   following documentation is retained to help developers understand
+   existing usage and how to remove it.
+
+   Support was `dropped
+   <http://lists.openstack.org/pipermail/openstack-dev/2017-March/114191.html>`_
+   primarily based on `feedback from operators
+   <http://lists.openstack.org/pipermail/openstack-operators/2017-March/012953.html>`_
+   that they were not only not needed but also undesirable, because they
+   fragmented the set of web pages providing helpful information about
+   any particular log message, thereby reducing the chances of finding
+   those web pages by doing a web search for the message.  Refer to
+   the email thread `understanding log domain change
    <http://lists.openstack.org/pipermail/openstack-dev/2017-March/thread.html#113365>`_
    on the openstack-dev mailing list for more details.
 
-OpenStack supports translating some log levels using separate message
-catalogs, and so has separate marker functions. These well-known names
-are used by the build system jobs that extract the messages from the
-source code and pass it to the translation tool.
+OpenStack previously supported translating some log levels using
+separate message catalogs, and so has separate marker functions. These
+well-known names were used by the build system jobs that extracted the
+messages from the source code and passed them to the translation tool.
 
 ========== ==========
  Level      Function
@@ -75,13 +87,12 @@ source code and pass it to the translation tool.
 ========== ==========
 
 .. note::
-   * Debug level log messages are not translated.
-   * LOG.exception creates an ERROR level log, so when a marker function is
-     used (see below) ``_LE()`` should be used.
+   Debug level log messages were never translated.
 
 
 Using a Marker Function
 =======================
+
 The marker functions are used to mark the translatable strings in the
 code.  The strings are extracted into catalogs using a tool that
 looks for these specific markers, so the function argument must just
@@ -91,13 +102,11 @@ For example: **do not do this**::
 
   # WRONG
   msg = _(variable_containing_msg)
-  w_msg = _LW(variable_warning_msg)
 
 Instead, use this style::
 
   # RIGHT
   msg = _('My message.')
-  w_msg = _LW('My warning message')
 
 
 Choosing a Marker Function
@@ -119,51 +128,39 @@ warning or info.
 going to a log file.  This ensures that the translated version of the
 message will be available to the user.
 
-The log marker functions (``_LI()``, ``_LW()``, ``_LE()``, and ``_LC()``)
-must only be used when the message is only sent directly to the log.
-Anytime that the message will be passed outside of the current context
-(for example as part of an exception) the ``_()`` marker function
-must be used.
+The log marker functions (``_LI()``, ``_LW()``, ``_LE()``, and
+``_LC()``) should no longer be used, and existing usages should be
+removed.  Anytime that the message is passed outside of the current
+context (for example as part of an exception) the ``_()`` marker
+function must be used instead.
 
-A common pattern is to define a single message object and use it more
-than once, for the log call and the exception.  In that case, ``_()``
-must be used because the message is going to appear in an exception that
-may be presented to the user.
+A common pattern used to be to define a single message object and use
+it more than once, for the log call and the exception.  In that case,
+``_()`` had to be used because the message was going to appear in an
+exception that may be presented to the user.
+
+However, now that log messages are no longer translated, it is
+unfortunately necessary to use two separate strings: a plain one for
+the log message, and a translatable one for the exception.
 
 For example, **do not do this**::
 
   # WRONG
-  msg = _LE('There was an error.')
-  LOG.exception(msg)
-  raise LocalExceptionClass(msg)
-
-Instead, use this style::
-
-  # RIGHT
   msg = _('There was an error.')
-  LOG.exception(msg)
+  LOG.error(msg)
   raise LocalExceptionClass(msg)
 
-Except in the case above, ``_()`` should not be used for translating
-log messages. This avoids having the same string in two message
-catalogs, possibly translated differently by two different
-translators.  The log message will translate properly because when
-the message is not found in the log specific catalog the ``_()``
-catalog will be used.
+or this::
 
-If a common message is not being used, they should each be treated
-separately with respect to choosing a marker function.
-
-For example, **do not do this**::
-
-  # WRONG
-  LOG.exception(_('There was an error.'))
-  raise LocalExceptionClass(_('An error occurred.'))
+  # EVEN MORE WRONG
+  msg = _LE('There was an error.')
+  LOG.error(msg)
+  raise LocalExceptionClass(msg)
 
 Instead, use this style::
 
   # RIGHT
-  LOG.exception(_LE('There was an error.'))
+  LOG.error('There was an error.')
   raise LocalExceptionClass(_('An error occurred.'))
 
 
@@ -201,46 +198,3 @@ Instead, use this style::
 
   # RIGHT
   raise ValueError(_('some message: v1=%(v1)s v2=%(v2)s') % {'v1': v1, 'v2': v2})
-
-
-Adding Variables to Log Messages
-================================
-
-String interpolation should be delayed to be handled by the logging
-code, rather than being done at the point of the logging call.  For
-example, **do not do this**::
-
-  # WRONG
-  LOG.info(_LI('some message: variable=%s') % variable)
-
-Instead, use this style::
-
-  # RIGHT
-  LOG.info(_LI('some message: variable=%s'), variable)
-
-This allows the logging package to skip creating the formatted log
-message if the message is not going to be emitted because of the
-current log level.
-
-Avoid Forcing the Translation of Translatable Variables
-=======================================================
-
-Translation can also be delayed for variables that potentially contain
-translatable objects such as exceptions.
-
-Whenever possible translation should not be forced by use of :func:`str`,
-:func:`unicode`, or :func:`six.text_type` on a message being used with
-a format string.
-
-For example, **do not do this**::
-
-  # WRONG
-  LOG.info(_LI('some message: exception=%s'), six.text_type(exc))
-
-Instead, use this style::
-
-  # RIGHT
-  LOG.info(_LI('some message: exception=%s'), exc)
-
-This allows the translation of the translatable replacement text to be
-delayed until the message is translated.
