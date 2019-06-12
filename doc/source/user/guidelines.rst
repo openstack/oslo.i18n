@@ -95,8 +95,8 @@ Using a Marker Function
 
 The marker functions are used to mark the translatable strings in the
 code.  The strings are extracted into catalogs using a tool that
-looks for these specific markers, so the function argument must just
-be a string.
+performs source inspection to look for these specific markers, so the
+function argument must just be a string.
 
 For example: **do not do this**::
 
