@@ -78,6 +78,26 @@ class Message(six.text_type):
         :returns: the translated message in unicode
         """
 
+        # We did a bad thing here. We shadowed the unicode built-in translate,
+        # which means there are circumstances where this function may be called
+        # with a desired_locale that is a non-string sequence or mapping type.
+        # This will not only result in incorrect behavior, it also fails
+        # because things like lists are not hashable, and we use the value in
+        # desired_locale as part of a dict key. If we see a non-string
+        # desired_locale, we know that the caller did not intend to call this
+        # form of translate and we should instead pass that along to the
+        # unicode implementation of translate.
+        #
+        # Unfortunately this doesn't entirely solve the problem as it would be
+        # possible for a caller to use a string as the mapping type and in that
+        # case we can't tell which version of translate they intended to call.
+        # That doesn't seem to be a common thing to do though. str.maketrans
+        # returns a dict, and that is probably the way most callers will create
+        # their mapping.
+        if (desired_locale is not None and
+                not isinstance(desired_locale, six.string_types)):
+            return super(Message, self).translate(desired_locale)
+
         translated_message = Message._translate_msgid(self.msgid,
                                                       self.domain,
                                                       desired_locale,
