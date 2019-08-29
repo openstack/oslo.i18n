@@ -65,11 +65,11 @@ class MessageTestCase(test_base.BaseTestCase):
         # The base representation of the message is in Spanish, as well as
         # the default translation, since the default locale was Spanish.
         self.assertEqual(es_translation, message)
-        self.assertEqual(es_translation, message.translate())
+        self.assertEqual(es_translation, message.translation())
 
-    def test_translate_returns_unicode(self):
+    def test_translation_returns_unicode(self):
         message = _message.Message('some %s') % 'message'
-        self.assertIsInstance(message.translate(), six.text_type)
+        self.assertIsInstance(message.translation(), six.text_type)
 
     def test_mod_with_named_parameters(self):
         msgid = ("%(description)s\nCommand: %(cmd)s\n"
@@ -86,7 +86,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         expected = msgid % params
         self.assertEqual(expected, result)
-        self.assertEqual(expected, result.translate())
+        self.assertEqual(expected, result.translation())
 
     def test_multiple_mod_with_named_parameter(self):
         msgid = ("%(description)s\nCommand: %(cmd)s\n"
@@ -131,7 +131,7 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertIsNot(expected, first)
 
         # Final translations should be the same
-        self.assertEqual(expected.translate(), first.translate())
+        self.assertEqual(expected.translation(), first.translation())
 
     def test_mod_with_named_parameters_no_space(self):
         msgid = ("Request: %(method)s http://%(server)s:"
@@ -146,7 +146,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         expected = msgid % params
         self.assertEqual(expected, result)
-        self.assertEqual(expected, result.translate())
+        self.assertEqual(expected, result.translation())
 
     def test_mod_with_dict_parameter(self):
         msgid = "Test that we can inject a dictionary %s"
@@ -156,7 +156,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         expected = msgid % params
         self.assertEqual(expected, result)
-        self.assertEqual(expected, result.translate())
+        self.assertEqual(expected, result.translation())
 
     def test_mod_with_wrong_field_type_in_trans(self):
         msgid = "Correct type %(arg1)s"
@@ -174,7 +174,7 @@ class MessageTestCase(test_base.BaseTestCase):
                 trans.return_value.gettext.return_value = wrong_type
             else:
                 trans.return_value.ugettext.return_value = wrong_type
-            trans_result = result.translate()
+            trans_result = result.translation()
             expected = msgid % params
             self.assertEqual(expected, trans_result)
 
@@ -204,10 +204,10 @@ class MessageTestCase(test_base.BaseTestCase):
 
         for message, result in zip(messages, results):
             self.assertEqual(type(result), _message.Message)
-            self.assertEqual(message, result.translate())
+            self.assertEqual(message, result.translation())
 
             # simulate writing out as string
-            result_str = '%s' % result.translate()
+            result_str = '%s' % result.translation()
             self.assertEqual(result_str, message)
             self.assertEqual(message, result)
 
@@ -220,7 +220,7 @@ class MessageTestCase(test_base.BaseTestCase):
         changing_dict['current_value'] = 2
         # Even if the param changes when the message is
         # translated it should use the original param
-        self.assertEqual('Found object: 1', result.translate())
+        self.assertEqual('Found object: 1', result.translation())
 
     def test_mod_deep_copies_parameters(self):
         msgid = "Found list: %(current_list)s"
@@ -232,26 +232,26 @@ class MessageTestCase(test_base.BaseTestCase):
         changing_list.append(4)
         # Even though the list changed the message
         # translation should use the original list
-        self.assertEqual("Found list: [1, 2, 3]", result.translate())
+        self.assertEqual("Found list: [1, 2, 3]", result.translation())
 
     def test_mod_deep_copies_param_nodeep_param(self):
         msgid = "Value: %s"
         params = utils.NoDeepCopyObject(5)
         # Apply the params
         result = _message.Message(msgid) % params
-        self.assertEqual("Value: 5", result.translate())
+        self.assertEqual("Value: 5", result.translation())
 
     def test_mod_deep_copies_param_nodeep_dict(self):
         msgid = "Values: %(val1)s %(val2)s"
         params = {'val1': 1, 'val2': utils.NoDeepCopyObject(2)}
         # Apply the params
         result = _message.Message(msgid) % params
-        self.assertEqual("Values: 1 2", result.translate())
+        self.assertEqual("Values: 1 2", result.translation())
 
         # Apply again to make sure other path works as well
         params = {'val1': 3, 'val2': utils.NoDeepCopyObject(4)}
         result = _message.Message(msgid) % params
-        self.assertEqual("Values: 3 4", result.translate())
+        self.assertEqual("Values: 3 4", result.translation())
 
     def test_mod_returns_a_copy(self):
         msgid = "Some msgid string: %(test1)s %(test2)s"
@@ -261,16 +261,16 @@ class MessageTestCase(test_base.BaseTestCase):
 
         self.assertIsNot(message, m1)
         self.assertIsNot(message, m2)
-        self.assertEqual(m1.translate(),
+        self.assertEqual(m1.translation(),
                          msgid % {'test1': 'foo', 'test2': 'bar'})
-        self.assertEqual(m2.translate(),
+        self.assertEqual(m2.translation(),
                          msgid % {'test1': 'foo2', 'test2': 'bar2'})
 
     def test_mod_with_none_parameter(self):
         msgid = "Some string with params: %s"
         message = _message.Message(msgid) % None
         self.assertEqual(msgid % None, message)
-        self.assertEqual(msgid % None, message.translate())
+        self.assertEqual(msgid % None, message.translation())
 
     def test_mod_with_missing_parameters(self):
         msgid = "Some string with params: %s %s"
@@ -288,7 +288,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         expected = msgid % params
         self.assertEqual(expected, result)
-        self.assertEqual(expected, result.translate())
+        self.assertEqual(expected, result.translation())
 
         # Make sure unused params still there
         self.assertEqual(params.keys(), result.params.keys())
@@ -304,7 +304,7 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertRaises(TypeError, test_me)
 
     @mock.patch('gettext.translation')
-    def test_translate(self, mock_translation):
+    def test_translation(self, mock_translation):
         en_message = 'A message in the default locale'
         es_translation = 'A message in Spanish'
         message = _message.Message(en_message)
@@ -314,7 +314,7 @@ class MessageTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
-        self.assertEqual(es_translation, message.translate('es'))
+        self.assertEqual(es_translation, message.translation('es'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_from_unicoded_object(self, mock_translation):
@@ -331,7 +331,7 @@ class MessageTestCase(test_base.BaseTestCase):
         obj = utils.SomeObject(message)
         unicoded_obj = six.text_type(obj)
 
-        self.assertEqual(es_translation, unicoded_obj.translate('es'))
+        self.assertEqual(es_translation, unicoded_obj.translation('es'))
 
     @mock.patch('gettext.translation')
     def test_translate_multiple_languages(self, mock_translation):
@@ -347,11 +347,11 @@ class MessageTestCase(test_base.BaseTestCase):
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
-        self.assertEqual(es_translation, message.translate('es'))
-        self.assertEqual(zh_translation, message.translate('zh'))
-        self.assertEqual(en_message, message.translate(None))
-        self.assertEqual(en_message, message.translate('en'))
-        self.assertEqual(en_message, message.translate('XX'))
+        self.assertEqual(es_translation, message.translation('es'))
+        self.assertEqual(zh_translation, message.translation('zh'))
+        self.assertEqual(en_message, message.translation(None))
+        self.assertEqual(en_message, message.translation('en'))
+        self.assertEqual(en_message, message.translation('XX'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_param(self, mock_translation):
@@ -368,8 +368,8 @@ class MessageTestCase(test_base.BaseTestCase):
 
         default_translation = message_with_params % param
         expected_translation = es_translation % param
-        self.assertEqual(expected_translation, msg.translate('es'))
-        self.assertEqual(default_translation, msg.translate('XX'))
+        self.assertEqual(expected_translation, msg.translation('es'))
+        self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('gettext.translation')
     @mock.patch('oslo_i18n._message.LOG')
@@ -390,7 +390,7 @@ class MessageTestCase(test_base.BaseTestCase):
             msg = msg % param
             default_translation = message_with_params % param
 
-            self.assertEqual(default_translation, msg.translate('es'))
+            self.assertEqual(default_translation, msg.translation('es'))
 
             self.assertEqual(1, len(w))
             # Note(gibi): in python 3.4 str.__repr__ does not put the unicode
@@ -475,8 +475,8 @@ class MessageTestCase(test_base.BaseTestCase):
         default_translation = message_with_params % param
         expected_translation = es_translation % param_translation
 
-        self.assertEqual(expected_translation, msg.translate('es'))
-        self.assertEqual(default_translation, msg.translate('XX'))
+        self.assertEqual(expected_translation, msg.translation('es'))
+        self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_param_from_unicoded_obj(self,
@@ -498,8 +498,8 @@ class MessageTestCase(test_base.BaseTestCase):
         obj = utils.SomeObject(msg)
         unicoded_obj = six.text_type(obj)
 
-        self.assertEqual(expected_translation, unicoded_obj.translate('es'))
-        self.assertEqual(default_translation, unicoded_obj.translate('XX'))
+        self.assertEqual(expected_translation, unicoded_obj.translation('es'))
+        self.assertEqual(default_translation, unicoded_obj.translation('XX'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_message_parameter(self, mock_translation):
@@ -519,8 +519,8 @@ class MessageTestCase(test_base.BaseTestCase):
 
         default_translation = message_with_params % message_param
         expected_translation = es_translation % es_param_translation
-        self.assertEqual(expected_translation, msg.translate('es'))
-        self.assertEqual(default_translation, msg.translate('XX'))
+        self.assertEqual(expected_translation, msg.translation('es'))
+        self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_message_parameters(self, mock_translation):
@@ -546,8 +546,8 @@ class MessageTestCase(test_base.BaseTestCase):
                                                      another_message_param)
         expected_translation = es_translation % (es_param_translation,
                                                  another_es_param_translation)
-        self.assertEqual(expected_translation, msg.translate('es'))
-        self.assertEqual(default_translation, msg.translate('XX'))
+        self.assertEqual(expected_translation, msg.translation('es'))
+        self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_named_parameters(self, mock_translation):
@@ -567,8 +567,8 @@ class MessageTestCase(test_base.BaseTestCase):
 
         default_translation = message_with_params % {'param': message_param}
         expected_translation = es_translation % {'param': es_param_translation}
-        self.assertEqual(expected_translation, msg.translate('es'))
-        self.assertEqual(default_translation, msg.translate('XX'))
+        self.assertEqual(expected_translation, msg.translation('es'))
+        self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('locale.getdefaultlocale')
     @mock.patch('gettext.translation')
@@ -609,13 +609,15 @@ class MessageTestCase(test_base.BaseTestCase):
         # Because sys.getdefaultlocale() was Spanish,
         # the default translation will be to Spanish
         self.assertEqual(es_translation, msg)
-        self.assertEqual(es_translation, msg.translate())
-        self.assertEqual(es_translation, msg.translate('es'))
+        self.assertEqual(es_translation, msg.translation())
+        self.assertEqual(es_translation, msg.translation('es'))
 
         # Translation into other locales still works
-        self.assertEqual(zh_translation, msg.translate('zh'))
-        self.assertEqual(fr_translation, msg.translate('fr'))
+        self.assertEqual(zh_translation, msg.translation('zh'))
+        self.assertEqual(fr_translation, msg.translation('fr'))
 
+    # TODO(bnemec): Remove these three tests when the translate compatibility
+    # shim is removed.
     def test_translate_with_dict(self):
         msg = _message.Message('abc')
         # This dict is what you get back from str.maketrans('abc', 'xyz')
@@ -630,6 +632,15 @@ class MessageTestCase(test_base.BaseTestCase):
         table[ord('b')] = 'c'
         table[ord('c')] = 'd'
         self.assertEqual('bcd', msg.translate(table))
+
+    @mock.patch('warnings.warn')
+    def test_translate_warning(self, mock_warn):
+        msg = _message.Message('a message')
+        msg.translate('es')
+        self.assertTrue(mock_warn.called, 'No warning found')
+        # Make sure it was our warning
+        self.assertIn('Message.translate called with a string argument.',
+                      mock_warn.call_args[0][0])
 
 
 class TranslateMsgidTest(test_base.BaseTestCase):

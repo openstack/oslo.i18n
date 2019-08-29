@@ -45,7 +45,7 @@ def translate(obj, desired_locale=None):
     if isinstance(message, _message.Message):
         # Even after unicoding() we still need to check if we are
         # running with translatable unicode before translating
-        return message.translate(desired_locale)
+        return message.translation(desired_locale)
     return obj
 
 

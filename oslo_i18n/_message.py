@@ -69,15 +69,12 @@ class Message(six.text_type):
         return msg
 
     def translate(self, desired_locale=None):
-        """Translate this message to the desired locale.
+        """DEPRECATED: Use ``translation`` instead
 
-        :param desired_locale: The desired locale to translate the message to,
-                               if no locale is provided the message will be
-                               translated to the system's default locale.
-
-        :returns: the translated message in unicode
+        This is a compatibility shim to allow callers a chance to move away
+        from using this function, which shadows a built-in function from our
+        parent class.
         """
-
         # We did a bad thing here. We shadowed the unicode built-in translate,
         # which means there are circumstances where this function may be called
         # with a desired_locale that is a non-string sequence or mapping type.
@@ -97,7 +94,24 @@ class Message(six.text_type):
         if (desired_locale is not None and
                 not isinstance(desired_locale, six.string_types)):
             return super(Message, self).translate(desired_locale)
+        warnings.warn('Message.translate called with a string argument. '
+                      'If your intent was to translate the message into '
+                      'another language, please call Message.translation '
+                      'instead. If your intent was to call "translate" as '
+                      'defined by the str/unicode type, please use a dict or '
+                      'list mapping instead. String mappings will not work '
+                      'until this compatibility shim is removed.')
+        return self.translation(desired_locale)
 
+    def translation(self, desired_locale=None):
+        """Translate this message to the desired locale.
+
+        :param desired_locale: The desired locale to translate the message to,
+                               if no locale is provided the message will be
+                               translated to the system's default locale.
+
+        :returns: the translated message in unicode
+        """
         translated_message = Message._translate_msgid(self.msgid,
                                                       self.domain,
                                                       desired_locale,
