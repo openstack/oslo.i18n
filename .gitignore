@@ -10,6 +10,7 @@
 # git config --global core.excludesfile '~/.gitignore'
 
 *.pyc
+.eggs/
 *.log
 .coverage
 .venv
@@ -20,7 +21,7 @@ oslo.i18n.egg-info/
 skeleton.egg-info/
 build/
 dist/
-doc/source/api
+doc/source/reference/api
 AUTHORS
 .update-venv/
 ChangeLog
