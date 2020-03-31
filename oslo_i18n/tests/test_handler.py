@@ -15,8 +15,8 @@
 #    under the License.
 
 import logging
+from unittest import mock
 
-import mock
 from oslotest import base as test_base
 import six
 

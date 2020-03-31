@@ -17,9 +17,9 @@
 from __future__ import unicode_literals
 
 import logging
+from unittest import mock
 import warnings
 
-import mock
 from oslotest import base as test_base
 import six
 import testtools

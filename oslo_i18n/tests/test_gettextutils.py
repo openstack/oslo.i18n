@@ -16,9 +16,9 @@
 
 import gettext
 import logging
+from unittest import mock
 
 from babel import localedata
-import mock
 from oslotest import base as test_base
 import six
 

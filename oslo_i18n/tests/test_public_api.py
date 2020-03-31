@@ -9,12 +9,10 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-"""A few tests that use the public API to ensure the imports work.
-"""
+"""A few tests that use the public API to ensure the imports work."""
 
 import unittest
-
-import mock
+from unittest import mock
 
 import oslo_i18n
 from oslo_i18n import _lazy
