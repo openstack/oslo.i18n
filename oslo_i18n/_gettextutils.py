@@ -19,9 +19,8 @@
 
 import copy
 import gettext
+import locale
 import os
-
-from babel import localedata
 
 from oslo_i18n import _factory
 from oslo_i18n import _locale
@@ -62,43 +61,20 @@ def get_available_languages(domain):
         return copy.copy(_AVAILABLE_LANGUAGES[domain])
 
     localedir = os.environ.get(_locale.get_locale_dir_variable_name(domain))
-    find = lambda x: gettext.find(domain,
-                                  localedir=localedir,
-                                  languages=[x])
+
+    def find(x):
+        return gettext.find(domain, localedir=localedir, languages=[x])
 
     # NOTE(mrodden): en_US should always be available (and first in case
     # order matters) since our in-line message strings are en_US
     language_list = ['en_US']
-    locale_identifiers = localedata.locale_identifiers()
-    language_list.extend(language for language in locale_identifiers
-                         if find(language))
+    locale_identifiers = set(locale.windows_locale.values())
+    language_list.extend(
+        language for language in locale_identifiers if find(language)
+    )
 
-    # In Babel 1.3, locale_identifiers() doesn't list some OpenStack supported
-    # locales (e.g. 'zh_CN', and 'zh_TW') so we add the locales explicitly if
-    # necessary so that they are listed as supported.
-    aliases = {'zh': 'zh_CN',
-               'zh_Hant_HK': 'zh_HK',
-               'zh_Hant': 'zh_TW',
-               'fil': 'tl_PH'}
-    language_list.extend(alias for locale, alias in aliases.items()
-                         if (locale in language_list and
-                             alias not in language_list))
-
-    language_list.extend(alias for locale, alias in aliases.items()
-                         if (locale not in language_list and
-                             find(alias)))
-
-    # In webob.acceptparse, the best_match is just match the first element in
-    # the language_list, so make the precise element in front
-    result = ['en_US']
-    for i in language_list[1:]:
-        if '_' in i:
-            result.insert(1, i)
-        else:
-            result.append(i)
-
-    _AVAILABLE_LANGUAGES[domain] = result
-    return copy.copy(result)
+    _AVAILABLE_LANGUAGES[domain] = language_list
+    return copy.copy(language_list)
 
 
 _original_find = gettext.find

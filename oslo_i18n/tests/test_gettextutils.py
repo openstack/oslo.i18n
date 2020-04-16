@@ -18,7 +18,6 @@ import gettext
 import logging
 from unittest import mock
 
-from babel import localedata
 from oslotest import base as test_base
 import six
 
@@ -75,29 +74,15 @@ class GettextTest(test_base.BaseTestCase):
                 self.assertIn('_', six.moves.builtins.__dict__)
 
     def test_get_available_languages(self):
-        # All the available languages for which locale data is available
-        def _mock_locale_identifiers():
-            # 'zh', 'zh_Hant'. 'zh_Hant_HK', 'fil' all have aliases
-            # missing from babel but we add them in _gettextutils, we
-            # test that here too
-            return ['zh', 'es', 'nl', 'fr', 'zh_Hant', 'zh_Hant_HK', 'fil']
-
-        mock_patcher = mock.patch.object(localedata,
-                                         'list' if hasattr(localedata, 'list')
-                                         else 'locale_identifiers',
-                                         _mock_locale_identifiers)
-        mock_patcher.start()
-        self.addCleanup(mock_patcher.stop)
-
         # Only the languages available for a specific translation domain
         def _mock_gettext_find(domain, localedir=None, languages=None, all=0):
             languages = languages or []
             if domain == 'domain_1':
-                return 'translation-file' if any(x in ['zh', 'es', 'fil']
-                                                 for x in languages) else None
+                if any(x in ['en_GB', 'es_ES', 'fil_PH'] for x in languages):
+                    return 'translation-file'
             elif domain == 'domain_2':
-                return 'translation-file' if any(x in ['fr', 'zh_Hant']
-                                                 for x in languages) else None
+                if any(x in ['fr_FR', 'zh_HK'] for x in languages):
+                    return 'translation-file'
             return None
         mock_patcher = mock.patch.object(gettext, 'find', _mock_gettext_find)
         mock_patcher.start()
@@ -110,20 +95,19 @@ class GettextTest(test_base.BaseTestCase):
         # and it should also always be the first element since order matters
         domain_1_languages = _gettextutils.get_available_languages('domain_1')
         domain_2_languages = _gettextutils.get_available_languages('domain_2')
-        self.assertEqual('en_US', domain_1_languages[0])
-        self.assertEqual('en_US', domain_2_languages[0])
+
         # The domain languages should be included after en_US with
         # with their respective aliases when it applies
-        self.assertEqual(6, len(domain_1_languages))
-        self.assertIn('zh', domain_1_languages)
-        self.assertIn('zh_CN', domain_1_languages)
-        self.assertIn('es', domain_1_languages)
-        self.assertIn('fil', domain_1_languages)
-        self.assertIn('tl_PH', domain_1_languages)
-        self.assertEqual(4, len(domain_2_languages))
-        self.assertIn('fr', domain_2_languages)
-        self.assertIn('zh_Hant', domain_2_languages)
-        self.assertIn('zh_TW', domain_2_languages)
+        self.assertEqual('en_US', domain_1_languages[0])
+        self.assertEqual('en_US', domain_2_languages[0])
+
+        self.assertEqual(4, len(domain_1_languages), domain_1_languages)
+        self.assertEqual(
+            {'en_US', 'fil_PH', 'en_GB', 'es_ES'}, set(domain_1_languages),
+        )
+        self.assertEqual(3, len(domain_2_languages), domain_2_languages)
+        self.assertEqual({'en_US', 'fr_FR', 'zh_HK'}, set(domain_2_languages))
+
         self.assertEqual(2, len(_gettextutils._AVAILABLE_LANGUAGES))
         # Now test an unknown domain, only en_US should be included
         unknown_domain_languages = _gettextutils.get_available_languages('huh')
