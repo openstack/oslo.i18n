@@ -23,10 +23,9 @@ extensions = [
 ]
 
 # openstackdocstheme options
-repository_name = 'openstack/oslo.i18n'
-bug_project = 'oslo.i18n'
-bug_tag = ''
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+openstackdocs_repo_name = 'openstack/oslo.i18n'
+openstackdocs_bug_project = 'oslo.i18n'
+openstackdocs_bug_tag = ''
 
 # The master toctree document.
 master_doc = 'index'
@@ -43,7 +42,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 
 # -- Options for HTML output --------------------------------------------------

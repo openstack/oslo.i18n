@@ -40,10 +40,10 @@ extensions = [
 ]
 
 # openstackdocstheme options
-repository_name = 'openstack/oslo.i18n'
-bug_project = 'oslo.i18n'
-bug_tag = ''
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+openstackdocs_repo_name = 'openstack/oslo.i18n'
+openstackdocs_bug_project = 'oslo.i18n'
+openstackdocs_bug_tag = ''
+openstackdocs_auto_name = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -98,7 +98,7 @@ exclude_patterns = []
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
