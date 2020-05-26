@@ -633,15 +633,6 @@ class MessageTestCase(test_base.BaseTestCase):
         table[ord('c')] = 'd'
         self.assertEqual('bcd', msg.translate(table))
 
-    @mock.patch('warnings.warn')
-    def test_translate_warning(self, mock_warn):
-        msg = _message.Message('a message')
-        msg.translate('es')
-        self.assertTrue(mock_warn.called, 'No warning found')
-        # Make sure it was our warning
-        self.assertIn('Message.translate called with a string argument.',
-                      mock_warn.call_args[0][0])
-
 
 class TranslateMsgidTest(test_base.BaseTestCase):
 

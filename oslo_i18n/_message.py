@@ -68,41 +68,6 @@ class Message(six.text_type):
         msg.has_plural_form = has_plural_form
         return msg
 
-    def translate(self, desired_locale=None):
-        """DEPRECATED: Use ``translation`` instead
-
-        This is a compatibility shim to allow callers a chance to move away
-        from using this function, which shadows a built-in function from our
-        parent class.
-        """
-        # We did a bad thing here. We shadowed the unicode built-in translate,
-        # which means there are circumstances where this function may be called
-        # with a desired_locale that is a non-string sequence or mapping type.
-        # This will not only result in incorrect behavior, it also fails
-        # because things like lists are not hashable, and we use the value in
-        # desired_locale as part of a dict key. If we see a non-string
-        # desired_locale, we know that the caller did not intend to call this
-        # form of translate and we should instead pass that along to the
-        # unicode implementation of translate.
-        #
-        # Unfortunately this doesn't entirely solve the problem as it would be
-        # possible for a caller to use a string as the mapping type and in that
-        # case we can't tell which version of translate they intended to call.
-        # That doesn't seem to be a common thing to do though. str.maketrans
-        # returns a dict, and that is probably the way most callers will create
-        # their mapping.
-        if (desired_locale is not None and
-                not isinstance(desired_locale, six.string_types)):
-            return super(Message, self).translate(desired_locale)
-        warnings.warn('Message.translate called with a string argument. '
-                      'If your intent was to translate the message into '
-                      'another language, please call Message.translation '
-                      'instead. If your intent was to call "translate" as '
-                      'defined by the str/unicode type, please use a dict or '
-                      'list mapping instead. String mappings will not work '
-                      'until this compatibility shim is removed.')
-        return self.translation(desired_locale)
-
     def translation(self, desired_locale=None):
         """Translate this message to the desired locale.
 
