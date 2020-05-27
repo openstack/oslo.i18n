@@ -50,6 +50,19 @@ def install(domain):
 
 
 _AVAILABLE_LANGUAGES = {}
+# Copied from Babel so anyone using aliases that were previously provided by
+# the Babel implementation of get_available_languages continues to work. These
+# are not recommended for use in new code.
+_BABEL_ALIASES = {
+    'ar': 'ar_SY', 'bg': 'bg_BG', 'bs': 'bs_BA', 'ca': 'ca_ES', 'cs': 'cs_CZ',
+    'da': 'da_DK', 'de': 'de_DE', 'el': 'el_GR', 'en': 'en_US', 'es': 'es_ES',
+    'et': 'et_EE', 'fa': 'fa_IR', 'fi': 'fi_FI', 'fr': 'fr_FR', 'gl': 'gl_ES',
+    'he': 'he_IL', 'hu': 'hu_HU', 'id': 'id_ID', 'is': 'is_IS', 'it': 'it_IT',
+    'ja': 'ja_JP', 'km': 'km_KH', 'ko': 'ko_KR', 'lt': 'lt_LT', 'lv': 'lv_LV',
+    'mk': 'mk_MK', 'nl': 'nl_NL', 'nn': 'nn_NO', 'no': 'nb_NO', 'pl': 'pl_PL',
+    'pt': 'pt_PT', 'ro': 'ro_RO', 'ru': 'ru_RU', 'sk': 'sk_SK', 'sl': 'sl_SI',
+    'sv': 'sv_SE', 'th': 'th_TH', 'tr': 'tr_TR', 'uk': 'uk_UA'
+}
 
 
 def get_available_languages(domain):
@@ -71,6 +84,9 @@ def get_available_languages(domain):
     locale_identifiers = set(locale.windows_locale.values())
     language_list.extend(
         language for language in locale_identifiers if find(language)
+    )
+    language_list.extend(
+        alias for alias, _ in _BABEL_ALIASES.items() if find(alias)
     )
 
     _AVAILABLE_LANGUAGES[domain] = language_list

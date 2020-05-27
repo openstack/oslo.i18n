@@ -78,7 +78,8 @@ class GettextTest(test_base.BaseTestCase):
         def _mock_gettext_find(domain, localedir=None, languages=None, all=0):
             languages = languages or []
             if domain == 'domain_1':
-                if any(x in ['en_GB', 'es_ES', 'fil_PH'] for x in languages):
+                if any(x in ['en_GB', 'es_ES', 'fil_PH', 'it']
+                       for x in languages):
                     return 'translation-file'
             elif domain == 'domain_2':
                 if any(x in ['fr_FR', 'zh_HK'] for x in languages):
@@ -101,12 +102,14 @@ class GettextTest(test_base.BaseTestCase):
         self.assertEqual('en_US', domain_1_languages[0])
         self.assertEqual('en_US', domain_2_languages[0])
 
-        self.assertEqual(4, len(domain_1_languages), domain_1_languages)
+        self.assertEqual(5, len(domain_1_languages), domain_1_languages)
         self.assertEqual(
-            {'en_US', 'fil_PH', 'en_GB', 'es_ES'}, set(domain_1_languages),
+            {'en_US', 'fil_PH', 'en_GB', 'es_ES', 'it'},
+            set(domain_1_languages),
         )
         self.assertEqual(3, len(domain_2_languages), domain_2_languages)
-        self.assertEqual({'en_US', 'fr_FR', 'zh_HK'}, set(domain_2_languages))
+        self.assertEqual({'en_US', 'fr_FR', 'zh_HK'},
+                         set(domain_2_languages))
 
         self.assertEqual(2, len(_gettextutils._AVAILABLE_LANGUAGES))
         # Now test an unknown domain, only en_US should be included
