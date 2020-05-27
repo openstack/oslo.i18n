@@ -616,23 +616,6 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(zh_translation, msg.translation('zh'))
         self.assertEqual(fr_translation, msg.translation('fr'))
 
-    # TODO(bnemec): Remove these three tests when the translate compatibility
-    # shim is removed.
-    def test_translate_with_dict(self):
-        msg = _message.Message('abc')
-        # This dict is what you get back from str.maketrans('abc', 'xyz')
-        # We can't actually call that here because it doesn't exist on py2
-        # and the string.maketrans that does behaves differently.
-        self.assertEqual('xyz', msg.translate({97: 120, 98: 121, 99: 122}))
-
-    def test_translate_with_list(self):
-        msg = _message.Message('abc')
-        table = [six.unichr(x) for x in range(128)]
-        table[ord('a')] = 'b'
-        table[ord('b')] = 'c'
-        table[ord('c')] = 'd'
-        self.assertEqual('bcd', msg.translate(table))
-
 
 class TranslateMsgidTest(test_base.BaseTestCase):
 
