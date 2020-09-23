@@ -12,18 +12,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import six
-
 
 class SomeObject(object):
 
     def __init__(self, message):
         self.message = message
 
-    def __unicode__(self):
+    def __str__(self):
         return self.message
-    # alias for Python 3
-    __str__ = __unicode__
 
 
 class NoDeepCopyObject(object):
@@ -31,12 +27,8 @@ class NoDeepCopyObject(object):
     def __init__(self, value):
         self.value = value
 
-    if six.PY3:
-        def __str__(self):
-            return str(self.value)
-    else:
-        def __unicode__(self):
-            return six.text_type(self.value)
+    def __str__(self):
+        return str(self.value)
 
     def __deepcopy__(self, memo):
         raise TypeError('Deep Copy not supported')

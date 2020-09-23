@@ -168,10 +168,7 @@ class MessageTestCase(test_base.BaseTestCase):
             # Now set up ugettext to return the translated version of
             # the original message, with a bad format string.
             wrong_type = u'Wrong type %(arg1)d'
-            if six.PY3:
-                trans.return_value.gettext.return_value = wrong_type
-            else:
-                trans.return_value.ugettext.return_value = wrong_type
+            trans.return_value.gettext.return_value = wrong_type
             trans_result = result.translation()
             expected = msgid % params
             self.assertEqual(expected, trans_result)

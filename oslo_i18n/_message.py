@@ -117,7 +117,7 @@ class Message(six.text_type):
 
         if not has_contextual_form and not has_plural_form:
             # This is the most common case, so check it first.
-            translator = lang.gettext if six.PY3 else lang.ugettext
+            translator = lang.gettext
             translated_message = translator(msgid)
 
         elif has_contextual_form and has_plural_form:
@@ -127,7 +127,7 @@ class Message(six.text_type):
 
         elif has_contextual_form:
             (msgctx, msgtxt) = msgid
-            translator = lang.gettext if six.PY3 else lang.ugettext
+            translator = lang.gettext
 
             msg_with_ctx = "%s%s%s" % (msgctx, CONTEXT_SEPARATOR, msgtxt)
             translated_message = translator(msg_with_ctx)
@@ -138,7 +138,7 @@ class Message(six.text_type):
 
         elif has_plural_form:
             (msgsingle, msgplural, msgcount) = msgid
-            translator = lang.ngettext if six.PY3 else lang.ungettext
+            translator = lang.ngettext
             translated_message = translator(msgsingle, msgplural, msgcount)
 
         return translated_message

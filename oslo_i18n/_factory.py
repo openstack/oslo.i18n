@@ -19,8 +19,6 @@
 import gettext
 import os
 
-import six
-
 from oslo_i18n import _lazy
 from oslo_i18n import _locale
 from oslo_i18n import _message
@@ -75,7 +73,7 @@ class TranslatorFactory(object):
                                 fallback=True)
         # Use the appropriate method of the translation object based
         # on the python version.
-        m = t.gettext if six.PY3 else t.ugettext
+        m = t.gettext
 
         def f(msg):
             """oslo_i18n.gettextutils translation function."""
@@ -103,7 +101,7 @@ class TranslatorFactory(object):
                                 fallback=True)
         # Use the appropriate method of the translation object based
         # on the python version.
-        m = t.gettext if six.PY3 else t.ugettext
+        m = t.gettext
 
         def f(ctx, msg):
             """oslo.i18n.gettextutils translation with context function."""
@@ -140,7 +138,7 @@ class TranslatorFactory(object):
                                 fallback=True)
         # Use the appropriate method of the translation object based
         # on the python version.
-        m = t.ngettext if six.PY3 else t.ungettext
+        m = t.ngettext
 
         def f(msgsingle, msgplural, msgcount):
             """oslo.i18n.gettextutils plural translation function."""
