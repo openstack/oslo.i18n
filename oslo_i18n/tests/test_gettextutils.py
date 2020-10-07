@@ -14,12 +14,12 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import builtins
 import gettext
 import logging
 from unittest import mock
 
 from oslotest import base as test_base
-import six
 
 from oslo_i18n import _factory
 from oslo_i18n import _gettextutils
@@ -49,8 +49,7 @@ class GettextTest(test_base.BaseTestCase):
     def test__gettextutils_install(self):
         _gettextutils.install('blaa')
         _lazy.enable_lazy(False)
-        self.assertTrue(isinstance(self.t.primary('A String'),
-                                   six.text_type))
+        self.assertTrue(isinstance(self.t.primary('A String'), str))
 
         _gettextutils.install('blaa')
         _lazy.enable_lazy(True)
@@ -68,10 +67,10 @@ class GettextTest(test_base.BaseTestCase):
         with mock.patch('os.environ.get') as environ_get:
             with mock.patch('gettext.install'):
                 environ_get.return_value = '/foo/bar'
-                if '_' in six.moves.builtins.__dict__:
-                    del six.moves.builtins.__dict__['_']
+                if '_' in builtins.__dict__:
+                    del builtins.__dict__['_']
                 _gettextutils.install('blaa')
-                self.assertIn('_', six.moves.builtins.__dict__)
+                self.assertIn('_', builtins.__dict__)
 
     def test_get_available_languages(self):
         # Only the languages available for a specific translation domain

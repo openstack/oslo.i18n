@@ -12,7 +12,6 @@
 """A few tests that use the public API to ensure the imports work."""
 
 import unittest
-from unittest import mock
 
 import oslo_i18n
 from oslo_i18n import _lazy
@@ -24,8 +23,7 @@ class PublicAPITest(unittest.TestCase):
         oslo_i18n.TranslatorFactory('domain')
 
     def test_install(self):
-        with mock.patch('six.moves.builtins'):
-            oslo_i18n.install('domain')
+        oslo_i18n.install('domain')
 
     def test_get_available_languages(self):
         oslo_i18n.get_available_languages('domains')

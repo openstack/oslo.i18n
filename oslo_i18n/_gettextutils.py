@@ -44,9 +44,9 @@ def install(domain):
 
     :param domain: the translation domain
     """
-    from six import moves
+    import builtins
     tf = _factory.TranslatorFactory(domain)
-    moves.builtins.__dict__['_'] = tf.primary
+    builtins.__dict__['_'] = tf.primary
 
 
 _AVAILABLE_LANGUAGES = {}

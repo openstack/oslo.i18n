@@ -14,11 +14,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import io
 import logging
 from unittest import mock
 
 from oslotest import base as test_base
-import six
 
 from oslo_i18n import _message
 from oslo_i18n import log as i18n_log
@@ -32,7 +32,7 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
     def setUp(self):
         super(TranslationHandlerTestCase, self).setUp()
 
-        self.stream = six.StringIO()
+        self.stream = io.StringIO()
         self.destination_handler = logging.StreamHandler(self.stream)
         self.translation_handler = i18n_log.TranslationHandler('zh_CN')
         self.translation_handler.setTarget(self.destination_handler)

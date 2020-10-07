@@ -13,7 +13,6 @@
 #    under the License.
 
 from oslotest import base as test_base
-import six
 
 import oslo_i18n
 from oslo_i18n import _gettextutils
@@ -38,7 +37,7 @@ class TranslationFixtureTest(test_base.BaseTestCase):
     def test_immediate(self):
         msg = self.trans_fixture.immediate('this is a lazy message')
         self.assertNotIsInstance(msg, _message.Message)
-        self.assertIsInstance(msg, six.text_type)
+        self.assertIsInstance(msg, str)
         self.assertEqual(u'this is a lazy message', msg)
 
 

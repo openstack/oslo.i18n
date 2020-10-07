@@ -23,8 +23,6 @@ import logging
 import os
 import warnings
 
-import six
-
 from oslo_i18n import _locale
 from oslo_i18n import _translate
 
@@ -35,7 +33,7 @@ CONTEXT_SEPARATOR = "\x04"
 LOG = logging.getLogger(__name__)
 
 
-class Message(six.text_type):
+class Message(str):
     """A Message object is a unicode object that can be translated.
 
     Translation of Message is done explicitly using the translate() method.
@@ -184,7 +182,7 @@ class Message(six.text_type):
         # by the base class (i.e. unicode()), the only thing  we do here is
         # save the original msgid and the parameters in case of a translation
         params = self._sanitize_mod_params(other)
-        unicode_mod = self._safe_translate(six.text_type(self), params)
+        unicode_mod = self._safe_translate(str(self), params)
         modded = Message(self.msgid,
                          msgtext=unicode_mod,
                          params=params,
@@ -221,7 +219,7 @@ class Message(six.text_type):
         except Exception:
             # Fallback to casting to unicode this will handle the
             # python code-like objects that can't be deep-copied
-            return six.text_type(param)
+            return str(param)
 
     def __add__(self, other):
         from oslo_i18n._i18n import _

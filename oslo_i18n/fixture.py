@@ -16,7 +16,6 @@
 import gettext
 
 import fixtures
-import six
 
 from oslo_i18n import _lazy
 from oslo_i18n import _message
@@ -65,7 +64,7 @@ class Translation(fixtures.Fixture):
         :type msg: str or unicode
 
         """
-        return six.text_type(msg)
+        return str(msg)
 
 
 class ToggleLazy(fixtures.Fixture):

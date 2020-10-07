@@ -19,7 +19,6 @@ from unittest import mock
 import warnings
 
 from oslotest import base as test_base
-import six
 import testtools
 
 from oslo_i18n import _message
@@ -42,7 +41,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
     def test_message_is_unicode(self):
         message = _message.Message('some %s') % 'message'
-        self.assertIsInstance(message, six.text_type)
+        self.assertIsInstance(message, str)
 
     @mock.patch('locale.getdefaultlocale')
     @mock.patch('gettext.translation')
@@ -67,7 +66,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
     def test_translation_returns_unicode(self):
         message = _message.Message('some %s') % 'message'
-        self.assertIsInstance(message.translation(), six.text_type)
+        self.assertIsInstance(message.translation(), str)
 
     def test_mod_with_named_parameters(self):
         msgid = ("%(description)s\nCommand: %(cmd)s\n"
@@ -324,7 +323,7 @@ class MessageTestCase(test_base.BaseTestCase):
         # Here we are not testing the Message object directly but the result
         # of unicoding() an object whose unicode representation is a Message
         obj = utils.SomeObject(message)
-        unicoded_obj = six.text_type(obj)
+        unicoded_obj = str(obj)
 
         self.assertEqual(es_translation, unicoded_obj.translation('es'))
 
@@ -491,7 +490,7 @@ class MessageTestCase(test_base.BaseTestCase):
         expected_translation = es_translation % param
 
         obj = utils.SomeObject(msg)
-        unicoded_obj = six.text_type(obj)
+        unicoded_obj = str(obj)
 
         self.assertEqual(expected_translation, unicoded_obj.translation('es'))
         self.assertEqual(default_translation, unicoded_obj.translation('XX'))

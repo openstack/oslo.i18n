@@ -14,8 +14,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import six
-
 __all__ = [
     'translate',
 ]
@@ -41,7 +39,7 @@ def translate(obj, desired_locale=None):
     if not isinstance(message, _message.Message):
         # If the object to translate is not already translatable,
         # let's first get its unicode representation
-        message = six.text_type(obj)
+        message = str(obj)
     if isinstance(message, _message.Message):
         # Even after unicoding() we still need to check if we are
         # running with translatable unicode before translating
