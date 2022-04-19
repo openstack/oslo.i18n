@@ -38,7 +38,7 @@ class TranslationFixtureTest(test_base.BaseTestCase):
         msg = self.trans_fixture.immediate('this is a lazy message')
         self.assertNotIsInstance(msg, _message.Message)
         self.assertIsInstance(msg, str)
-        self.assertEqual(u'this is a lazy message', msg)
+        self.assertEqual('this is a lazy message', msg)
 
 
 class ToggleLazyFixtureText(test_base.BaseTestCase):

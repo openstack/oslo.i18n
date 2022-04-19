@@ -166,7 +166,7 @@ class MessageTestCase(test_base.BaseTestCase):
             result = _message.Message(msgid) % params
             # Now set up ugettext to return the translated version of
             # the original message, with a bad format string.
-            wrong_type = u'Wrong type %(arg1)d'
+            wrong_type = 'Wrong type %(arg1)d'
             trans.return_value.gettext.return_value = wrong_type
             trans_result = result.translation()
             expected = msgid % params

@@ -37,4 +37,4 @@ class PublicAPITest(unittest.TestCase):
             oslo_i18n.enable_lazy(original)
 
     def test_translate(self):
-        oslo_i18n.translate(u'string')
+        oslo_i18n.translate('string')

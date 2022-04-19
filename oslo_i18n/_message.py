@@ -168,8 +168,8 @@ class Message(str):
             # Do not translate this log message even if it is used as a
             # warning message as a wrong translation of this message could
             # cause infinite recursion
-            msg = (u'Failed to insert replacement values into translated '
-                   u'message %s (Original: %r): %s')
+            msg = ('Failed to insert replacement values into translated '
+                   'message %s (Original: %r): %s')
             warnings.warn(msg % (translated_message, self.msgid, err))
             LOG.debug(msg, translated_message, self.msgid, err)
 
