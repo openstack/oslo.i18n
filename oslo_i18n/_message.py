@@ -98,7 +98,7 @@ class Message(str):
     def _translate_msgid(msgid, domain, desired_locale=None,
                          has_contextual_form=False, has_plural_form=False):
         if not desired_locale:
-            system_locale = locale.getdefaultlocale()
+            system_locale = locale.getlocale(locale.LC_CTYPE)
             # If the system locale is not available to the runtime use English
             if not system_locale or not system_locale[0]:
                 desired_locale = 'en_US'
