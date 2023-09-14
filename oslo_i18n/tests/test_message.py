@@ -43,11 +43,11 @@ class MessageTestCase(test_base.BaseTestCase):
         message = _message.Message('some %s') % 'message'
         self.assertIsInstance(message, str)
 
-    @mock.patch('locale.getdefaultlocale')
+    @mock.patch('locale.getlocale')
     @mock.patch('gettext.translation')
     def test_create_message_non_english_default_locale(self,
                                                        mock_translation,
-                                                       mock_getdefaultlocale):
+                                                       mock_locale):
         msgid = 'A message in English'
         es_translation = 'A message in Spanish'
 
@@ -55,7 +55,7 @@ class MessageTestCase(test_base.BaseTestCase):
         translations_map = {'es': es_translations}
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
-        mock_getdefaultlocale.return_value = ('es',)
+        mock_locale.return_value = ('es',)
 
         message = _message.Message(msgid)
 
@@ -404,11 +404,11 @@ class MessageTestCase(test_base.BaseTestCase):
                                           mock.ANY)
 
     @mock.patch('gettext.translation')
-    @mock.patch('locale.getdefaultlocale', return_value=('es', ''))
+    @mock.patch('locale.getlocale', return_value=('es', ''))
     @mock.patch('oslo_i18n._message.LOG')
     def test_translate_message_bad_default_translation(self,
                                                        mock_log,
-                                                       mock_local,
+                                                       mock_locale,
                                                        mock_translation):
         message_with_params = 'A message: %s'
         es_translation = 'A message in Spanish: %s %s'
@@ -564,11 +564,11 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(expected_translation, msg.translation('es'))
         self.assertEqual(default_translation, msg.translation('XX'))
 
-    @mock.patch('locale.getdefaultlocale')
+    @mock.patch('locale.getlocale')
     @mock.patch('gettext.translation')
     def test_translate_message_non_default_locale(self,
                                                   mock_translation,
-                                                  mock_getdefaultlocale):
+                                                  mock_locale):
         message_with_params = 'A message with params: %(param)s'
         es_translation = 'A message with params in Spanish: %(param)s'
         zh_translation = 'A message with params in Chinese: %(param)s'
@@ -590,7 +590,7 @@ class MessageTestCase(test_base.BaseTestCase):
                                                         'zh': zh_translations,
                                                         'fr': fr_translations})
         mock_translation.side_effect = translator
-        mock_getdefaultlocale.return_value = ('es',)
+        mock_locale.return_value = ('es',)
 
         msg = _message.Message(message_with_params)
         msg_param = _message.Message(message_param)
@@ -600,7 +600,7 @@ class MessageTestCase(test_base.BaseTestCase):
         zh_translation = zh_translation % {'param': zh_param_translation}
         fr_translation = fr_translation % {'param': fr_param_translation}
 
-        # Because sys.getdefaultlocale() was Spanish,
+        # Because sys.getlocale() was Spanish,
         # the default translation will be to Spanish
         self.assertEqual(es_translation, msg)
         self.assertEqual(es_translation, msg.translation())
