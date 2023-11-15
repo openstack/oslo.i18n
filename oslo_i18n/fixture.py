@@ -160,5 +160,5 @@ class PrefixLazyTranslation(fixtures.Fixture):
             lambda *x, **y: self.languages))
         self.useFixture(fixtures.MonkeyPatch('gettext.translation',
                                              _prefix_translations))
-        self.useFixture(fixtures.MonkeyPatch('locale.getdefaultlocale',
+        self.useFixture(fixtures.MonkeyPatch('locale.getlocale',
                                              lambda *x, **y: self.locale))
