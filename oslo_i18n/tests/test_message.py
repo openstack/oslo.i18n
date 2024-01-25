@@ -197,7 +197,7 @@ class MessageTestCase(test_base.BaseTestCase):
             results.append(_message.Message(msgid) % param)
 
         for message, result in zip(messages, results):
-            self.assertEqual(type(result), _message.Message)
+            self.assertIsInstance(result, _message.Message)
             self.assertEqual(message, result.translation())
 
             # simulate writing out as string
