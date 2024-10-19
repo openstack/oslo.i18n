@@ -77,12 +77,12 @@ class ToggleLazy(fixtures.Fixture):
             lazy translation, passed to :func:`~oslo_i18n.enable_lazy`.
         :type enabled: bool
         """
-        super(ToggleLazy, self).__init__()
+        super().__init__()
         self._enabled = enabled
         self._original_value = _lazy.USE_LAZY
 
     def setUp(self):
-        super(ToggleLazy, self).setUp()
+        super().setUp()
         self.addCleanup(self._restore_original)
         _lazy.enable_lazy(self._enabled)
 
@@ -145,12 +145,12 @@ class PrefixLazyTranslation(fixtures.Fixture):
     _DEFAULT_LANG = 'en_US'
 
     def __init__(self, languages=None, locale=None):
-        super(PrefixLazyTranslation, self).__init__()
+        super().__init__()
         self.languages = languages or [PrefixLazyTranslation._DEFAULT_LANG]
         self.locale = locale
 
     def setUp(self):
-        super(PrefixLazyTranslation, self).setUp()
+        super().setUp()
         self.useFixture(ToggleLazy(True))
         self.useFixture(fixtures.MonkeyPatch(
             'oslo_i18n._gettextutils.get_available_languages',

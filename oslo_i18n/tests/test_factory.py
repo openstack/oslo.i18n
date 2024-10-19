@@ -29,14 +29,14 @@ CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 class TranslatorFactoryTest(test_base.BaseTestCase):
 
     def setUp(self):
-        super(TranslatorFactoryTest, self).setUp()
+        super().setUp()
         # remember so we can reset to it later in case it changes
         self._USE_LAZY = _lazy.USE_LAZY
 
     def tearDown(self):
         # reset to value before test
         _lazy.USE_LAZY = self._USE_LAZY
-        super(TranslatorFactoryTest, self).tearDown()
+        super().tearDown()
 
     def test_lazy(self):
         _lazy.enable_lazy(True)

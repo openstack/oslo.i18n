@@ -26,7 +26,7 @@ from oslo_i18n import fixture
 class TranslationFixtureTest(test_base.BaseTestCase):
 
     def setUp(self):
-        super(TranslationFixtureTest, self).setUp()
+        super().setUp()
         self.trans_fixture = self.useFixture(fixture.Translation())
 
     def test_lazy(self):

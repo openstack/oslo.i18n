@@ -13,7 +13,7 @@
 #    under the License.
 
 
-class SomeObject(object):
+class SomeObject:
 
     def __init__(self, message):
         self.message = message
@@ -22,7 +22,7 @@ class SomeObject(object):
         return self.message
 
 
-class NoDeepCopyObject(object):
+class NoDeepCopyObject:
 
     def __init__(self, value):
         self.value = value

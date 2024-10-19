@@ -32,7 +32,7 @@ __all__ = [
 CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 
 
-class TranslatorFactory(object):
+class TranslatorFactory:
     "Create translator functions"
 
     def __init__(self, domain, localedir=None):
@@ -110,7 +110,7 @@ class TranslatorFactory(object):
                 return _message.Message(msgid, domain=domain,
                                         has_contextual_form=True)
 
-            msgctx = "%s%s%s" % (ctx, CONTEXT_SEPARATOR, msg)
+            msgctx = "{}{}{}".format(ctx, CONTEXT_SEPARATOR, msg)
             s = m(msgctx)
             if CONTEXT_SEPARATOR in s:
                 # Translation not found

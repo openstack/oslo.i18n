@@ -33,7 +33,7 @@ LOG = logging.getLogger(__name__)
 class GettextTest(test_base.BaseTestCase):
 
     def setUp(self):
-        super(GettextTest, self).setUp()
+        super().setUp()
         # remember so we can reset to it later in case it changes
         self._USE_LAZY = _lazy.USE_LAZY
         self.t = _factory.TranslatorFactory('oslo_i18n.test')
@@ -41,7 +41,7 @@ class GettextTest(test_base.BaseTestCase):
     def tearDown(self):
         # reset to value before test
         _lazy.USE_LAZY = self._USE_LAZY
-        super(GettextTest, self).tearDown()
+        super().tearDown()
 
     def test_gettext_does_not_blow_up(self):
         LOG.info(self.t.primary('test'))
