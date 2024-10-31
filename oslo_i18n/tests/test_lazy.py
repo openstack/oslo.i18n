@@ -22,12 +22,12 @@ from oslo_i18n import _lazy
 class LazyTest(test_base.BaseTestCase):
 
     def setUp(self):
-        super(LazyTest, self).setUp()
+        super().setUp()
         self._USE_LAZY = _lazy.USE_LAZY
 
     def tearDown(self):
         _lazy.USE_LAZY = self._USE_LAZY
-        super(LazyTest, self).tearDown()
+        super().tearDown()
 
     def test_enable_lazy(self):
         _lazy.USE_LAZY = False

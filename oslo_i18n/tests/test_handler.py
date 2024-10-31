@@ -30,7 +30,7 @@ LOG = logging.getLogger(__name__)
 class TranslationHandlerTestCase(test_base.BaseTestCase):
 
     def setUp(self):
-        super(TranslationHandlerTestCase, self).setUp()
+        super().setUp()
 
         self.stream = io.StringIO()
         self.destination_handler = logging.StreamHandler(self.stream)

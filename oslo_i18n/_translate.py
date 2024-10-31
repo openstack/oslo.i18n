@@ -65,7 +65,7 @@ def translate_args(args, desired_locale=None):
     if isinstance(args, tuple):
         return tuple(translate(v, desired_locale) for v in args)
     if isinstance(args, dict):
-        translated_dict = dict((key, translate(value, desired_locale))
-                               for key, value in args.items())
+        translated_dict = {key: translate(value, desired_locale)
+                           for key, value in args.items()}
         return translated_dict
     return translate(args, desired_locale)

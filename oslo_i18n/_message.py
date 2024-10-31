@@ -58,7 +58,7 @@ class Message(str):
             msgtext = Message._translate_msgid(msgid, domain)
         # We want to initialize the parent unicode with the actual object that
         # would have been plain unicode if 'Message' was not enabled.
-        msg = super(Message, cls).__new__(cls, msgtext)
+        msg = super().__new__(cls, msgtext)
         msg.msgid = msgid
         msg.domain = domain
         msg.params = params
@@ -127,7 +127,7 @@ class Message(str):
             (msgctx, msgtxt) = msgid
             translator = lang.gettext
 
-            msg_with_ctx = "%s%s%s" % (msgctx, CONTEXT_SEPARATOR, msgtxt)
+            msg_with_ctx = "{}{}{}".format(msgctx, CONTEXT_SEPARATOR, msgtxt)
             translated_message = translator(msg_with_ctx)
 
             if CONTEXT_SEPARATOR in translated_message:
