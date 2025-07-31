@@ -1,12 +1,3 @@
-========================
-Team and repository tags
-========================
-
-.. image:: https://governance.openstack.org/tc/badges/oslo.i18n.svg
-    :target: https://governance.openstack.org/tc/reference/tags/index.html
-
-.. Change things from this point on
-
 ==================================================
  oslo.i18n -- Oslo Internationalization Utilities
 ==================================================
