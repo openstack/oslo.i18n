@@ -19,7 +19,7 @@ __all__ = [
 ]
 
 
-def translate(obj, desired_locale=None):
+def translate(obj: object, desired_locale: str | None = None) -> object:
     """Gets the translated unicode representation of the given object.
 
     If the object is not translatable it is returned as-is.
@@ -48,7 +48,7 @@ def translate(obj, desired_locale=None):
     return obj
 
 
-def translate_args(args, desired_locale=None):
+def translate_args(args: object, desired_locale: str | None = None) -> object:
     """Translates all the translatable elements of the given arguments object.
 
     This method is used for translating the translatable values in method

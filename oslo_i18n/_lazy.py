@@ -21,7 +21,7 @@ __all__ = [
 USE_LAZY = False
 
 
-def enable_lazy(enable=True):
+def enable_lazy(enable: bool = True) -> None:
     """Convenience function for configuring _() to use lazy gettext
 
     Call this at the start of execution to enable the gettextutils._

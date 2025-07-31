@@ -15,6 +15,7 @@
 #    under the License.
 """Translation function factory"""
 
+from collections.abc import Callable
 import gettext
 import os
 
@@ -34,7 +35,10 @@ CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 class TranslatorFactory:
     "Create translator functions"
 
-    def __init__(self, domain, localedir=None):
+    domain: str
+    localedir: str | None
+
+    def __init__(self, domain: str, localedir: str | None = None) -> None:
         """Establish a set of translation functions for the domain.
 
         :param domain: Name of translation domain,
@@ -49,7 +53,9 @@ class TranslatorFactory:
             localedir = os.environ.get(variable_name)
         self.localedir = localedir
 
-    def _make_translation_func(self, domain=None):
+    def _make_translation_func(
+        self, domain: str | None = None
+    ) -> Callable[[str], str | _message.Message]:
         """Return a translation function ready for use with messages.
 
         The returned function takes a single value, the unicode string
@@ -74,7 +80,7 @@ class TranslatorFactory:
         # on the python version.
         m = t.gettext
 
-        def f(msg):
+        def f(msg: str) -> str | _message.Message:
             """oslo_i18n.gettextutils translation function."""
             if _lazy.USE_LAZY:
                 return _message.Message(msg, domain=domain)
@@ -82,7 +88,9 @@ class TranslatorFactory:
 
         return f
 
-    def _make_contextual_translation_func(self, domain=None):
+    def _make_contextual_translation_func(
+        self, domain: str | None = None
+    ) -> Callable[[str, str], str | _message.Message]:
         """Return a translation function ready for use with context messages.
 
         The returned function takes two values, the context of
@@ -103,7 +111,7 @@ class TranslatorFactory:
         # on the python version.
         m = t.gettext
 
-        def f(ctx, msg):
+        def f(ctx: str, msg: str) -> str | _message.Message:
             """oslo.i18n.gettextutils translation with context function."""
             if _lazy.USE_LAZY:
                 msgid = (ctx, msg)
@@ -120,7 +128,9 @@ class TranslatorFactory:
 
         return f
 
-    def _make_plural_translation_func(self, domain=None):
+    def _make_plural_translation_func(
+        self, domain: str | None = None
+    ) -> Callable[[str, str, int], str | _message.Message]:
         """Return a plural translation function ready for use with messages.
 
         The returned function takes three values, the single form of
@@ -142,7 +152,9 @@ class TranslatorFactory:
         # on the python version.
         m = t.ngettext
 
-        def f(msgsingle, msgplural, msgcount):
+        def f(
+            msgsingle: str, msgplural: str, msgcount: int
+        ) -> str | _message.Message:
             """oslo.i18n.gettextutils plural translation function."""
             if _lazy.USE_LAZY:
                 msgid = (msgsingle, msgplural, msgcount)
@@ -154,12 +166,12 @@ class TranslatorFactory:
         return f
 
     @property
-    def primary(self):
+    def primary(self) -> Callable[[str], str | _message.Message]:
         "The default translation function."
         return self._make_translation_func()
 
     @property
-    def contextual_form(self):
+    def contextual_form(self) -> Callable[[str, str], str | _message.Message]:
         """The contextual translation function.
 
         The returned function takes two values, the context of
@@ -171,7 +183,7 @@ class TranslatorFactory:
         return self._make_contextual_translation_func()
 
     @property
-    def plural_form(self):
+    def plural_form(self) -> Callable[[str, str, int], str | _message.Message]:
         """The plural translation function.
 
         The returned function takes three values, the single form of
@@ -183,25 +195,27 @@ class TranslatorFactory:
         """
         return self._make_plural_translation_func()
 
-    def _make_log_translation_func(self, level):
+    def _make_log_translation_func(
+        self, level: str
+    ) -> Callable[[str], str | _message.Message]:
         return self._make_translation_func(self.domain + '-log-' + level)
 
     @property
-    def log_info(self):
+    def log_info(self) -> Callable[[str], str | _message.Message]:
         "Translate info-level log messages."
         return self._make_log_translation_func('info')
 
     @property
-    def log_warning(self):
+    def log_warning(self) -> Callable[[str], str | _message.Message]:
         "Translate warning-level log messages."
         return self._make_log_translation_func('warning')
 
     @property
-    def log_error(self):
+    def log_error(self) -> Callable[[str], str | _message.Message]:
         "Translate error-level log messages."
         return self._make_log_translation_func('error')
 
     @property
-    def log_critical(self):
+    def log_critical(self) -> Callable[[str], str | _message.Message]:
         "Translate critical-level log messages."
         return self._make_log_translation_func('critical')

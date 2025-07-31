@@ -12,6 +12,7 @@
 """Test fixtures for working with oslo_i18n."""
 
 import gettext
+from typing import Any
 
 import fixtures
 
@@ -19,7 +20,7 @@ from oslo_i18n import _lazy
 from oslo_i18n import _message
 
 
-class Translation(fixtures.Fixture):
+class Translation(fixtures.Fixture):  # type: ignore[misc]
     """Fixture for managing translatable strings.
 
     This class provides methods for creating translatable strings
@@ -34,7 +35,7 @@ class Translation(fixtures.Fixture):
 
     """
 
-    def __init__(self, domain='test-domain'):
+    def __init__(self, domain: str = 'test-domain') -> None:
         """Initialize the fixture.
 
         :param domain: The translation domain. This is not expected to
@@ -44,7 +45,7 @@ class Translation(fixtures.Fixture):
         """
         self.domain = domain
 
-    def lazy(self, msg):
+    def lazy(self, msg: str) -> _message.Message:
         """Return a lazily translated message.
 
         :param msg: Input message string. May optionally include
@@ -54,7 +55,7 @@ class Translation(fixtures.Fixture):
         """
         return _message.Message(msg, domain=self.domain)
 
-    def immediate(self, msg):
+    def immediate(self, msg: str) -> str:
         """Return a string as though it had been translated immediately.
 
         :param msg: Input message string. May optionally include
@@ -65,10 +66,10 @@ class Translation(fixtures.Fixture):
         return str(msg)
 
 
-class ToggleLazy(fixtures.Fixture):
+class ToggleLazy(fixtures.Fixture):  # type: ignore[misc]
     """Fixture to toggle lazy translation on or off for a test."""
 
-    def __init__(self, enabled):
+    def __init__(self, enabled: bool) -> None:
         """Force lazy translation on or off.
 
         :param enabled: Flag controlling whether to enable or disable
@@ -79,12 +80,12 @@ class ToggleLazy(fixtures.Fixture):
         self._enabled = enabled
         self._original_value = _lazy.USE_LAZY
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         self.addCleanup(self._restore_original)
         _lazy.enable_lazy(self._enabled)
 
-    def _restore_original(self):
+    def _restore_original(self) -> None:
         _lazy.enable_lazy(self._original_value)
 
 
@@ -99,25 +100,26 @@ class _PrefixTranslator(gettext.NullTranslations):
 
     """
 
-    def __init__(self, fp=None, prefix='noprefix'):
+    def __init__(self, fp: Any = None, prefix: str = 'noprefix') -> None:
         gettext.NullTranslations.__init__(self, fp)
         self.prefix = prefix
 
-    def gettext(self, message):
+    def gettext(self, message: str) -> str:
         msg = gettext.NullTranslations.gettext(self, message)
         return self.prefix + msg
 
-    def ugettext(self, message):
-        msg = gettext.NullTranslations.ugettext(self, message)
+    def ugettext(self, message: str) -> str:
+        # Note: ugettext is deprecated, fallback to gettext
+        msg = gettext.NullTranslations.gettext(self, message)
         return self.prefix + msg
 
 
-def _prefix_translations(*x, **y):
+def _prefix_translations(*x: Any, **y: Any) -> _PrefixTranslator:
     """Use message id prefixed with domain and language as translation"""
     return _PrefixTranslator(prefix=x[0] + '/' + y['languages'][0] + ': ')
 
 
-class PrefixLazyTranslation(fixtures.Fixture):
+class PrefixLazyTranslation(fixtures.Fixture):  # type: ignore[misc]
     """Fixture to prefix lazy translation enabled messages
 
     Use of this fixture will cause messages supporting lazy translation to
@@ -140,12 +142,14 @@ class PrefixLazyTranslation(fixtures.Fixture):
 
     _DEFAULT_LANG = 'en_US'
 
-    def __init__(self, languages=None, locale=None):
+    def __init__(
+        self, languages: list[str] | None = None, locale: Any = None
+    ) -> None:
         super().__init__()
         self.languages = languages or [PrefixLazyTranslation._DEFAULT_LANG]
         self.locale = locale
 
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
         self.useFixture(ToggleLazy(True))
         self.useFixture(

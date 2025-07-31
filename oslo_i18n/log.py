@@ -16,6 +16,7 @@
 
 """logging utilities for translation"""
 
+import logging
 from logging import handlers
 
 from oslo_i18n import _translate
@@ -55,7 +56,9 @@ class TranslationHandler(handlers.MemoryHandler):
 
     """
 
-    def __init__(self, locale=None, target=None):
+    def __init__(
+        self, locale: str | None = None, target: logging.Handler | None = None
+    ) -> None:
         """Initialize a TranslationHandler
 
         :param locale: locale to use for translating messages
@@ -70,10 +73,11 @@ class TranslationHandler(handlers.MemoryHandler):
         handlers.MemoryHandler.__init__(self, capacity=0, target=target)
         self.locale = locale
 
-    def setFormatter(self, fmt):
-        self.target.setFormatter(fmt)
+    def setFormatter(self, fmt: logging.Formatter | None) -> None:
+        if self.target is not None:
+            self.target.setFormatter(fmt)
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord) -> None:
         # We save the message from the original record to restore it
         # after translation, so other handlers are not affected by this
         original_msg = record.msg
@@ -85,12 +89,13 @@ class TranslationHandler(handlers.MemoryHandler):
             record.msg = original_msg
             record.args = original_args
 
-    def _translate_and_log_record(self, record):
+    def _translate_and_log_record(self, record: logging.LogRecord) -> None:
         record.msg = _translate.translate(record.msg, self.locale)
 
         # In addition to translating the message, we also need to translate
         # arguments that were passed to the log method that were not part
         # of the main message e.g., log.info(_('Some message %s'), this_one))
-        record.args = _translate.translate_args(record.args, self.locale)
+        record.args = _translate.translate_args(record.args, self.locale)  # type: ignore[assignment]
 
-        self.target.emit(record)
+        if self.target is not None:
+            self.target.emit(record)

@@ -15,7 +15,7 @@
 #    under the License.
 
 
-def get_locale_dir_variable_name(domain):
+def get_locale_dir_variable_name(domain: str) -> str:
     """Build environment variable name for  local dir.
 
     Convert a translation domain name to a variable for specifying

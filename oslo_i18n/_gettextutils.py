@@ -20,6 +20,8 @@ import copy
 import gettext
 import locale
 import os
+from typing import Any, Literal, overload
+from collections.abc import Iterable
 
 from oslo_i18n import _factory
 from oslo_i18n import _locale
@@ -30,7 +32,7 @@ __all__ = [
 ]
 
 
-def install(domain):
+def install(domain: str) -> None:
     """Install a _() function using the given translation domain.
 
     Given a translation domain, install a _() function using gettext's
@@ -49,7 +51,7 @@ def install(domain):
     builtins.__dict__['_'] = tf.primary
 
 
-_AVAILABLE_LANGUAGES = {}
+_AVAILABLE_LANGUAGES: dict[str, list[str]] = {}
 # Copied from Babel so anyone using aliases that were previously provided by
 # the Babel implementation of get_available_languages continues to work. These
 # are not recommended for use in new code.
@@ -96,7 +98,7 @@ _BABEL_ALIASES = {
 }
 
 
-def get_available_languages(domain):
+def get_available_languages(domain: str) -> list[str]:
     """Lists the available languages for the given translation domain.
 
     :param domain: the domain to get languages for
@@ -106,7 +108,7 @@ def get_available_languages(domain):
 
     localedir = os.environ.get(_locale.get_locale_dir_variable_name(domain))
 
-    def find(x):
+    def find(x: str) -> str | None:
         return gettext.find(domain, localedir=localedir, languages=[x])
 
     # NOTE(mrodden): en_US should always be available (and first in case
@@ -125,10 +127,54 @@ def get_available_languages(domain):
 
 
 _original_find = gettext.find
-_FIND_CACHE = {}
+_FIND_CACHE: dict[
+    tuple[str, str | None, tuple[str, ...] | None, bool | int], Any
+] = {}
 
 
-def cached_find(domain, localedir=None, languages=None, all=0):
+@overload
+def cached_find(
+    domain: str,
+    localedir: str | None = None,
+    languages: Iterable[str] | None = None,
+    all: Literal[False] = False,
+) -> str | None: ...
+
+
+@overload
+def cached_find(
+    domain: str,
+    localedir: str | None = None,
+    languages: Iterable[str] | None = None,
+    *,
+    all: Literal[True],
+) -> list[str]: ...
+
+
+@overload
+def cached_find(
+    domain: str,
+    localedir: str | None,
+    languages: Iterable[str] | None,
+    all: Literal[True],
+) -> list[str]: ...
+
+
+@overload
+def cached_find(
+    domain: str,
+    localedir: str | None = None,
+    languages: Iterable[str] | None = None,
+    all: bool = False,
+) -> Any: ...
+
+
+def cached_find(
+    domain: str,
+    localedir: str | None = None,
+    languages: Iterable[str] | None = None,
+    all: bool = False,
+) -> Any:
     """A version of gettext.find using a cache.
 
     gettext.find looks for mo files on the disk using os.path.exists. Those
@@ -149,4 +195,4 @@ def cached_find(domain, localedir=None, languages=None, all=0):
     return result
 
 
-gettext.find = cached_find
+gettext.find = cached_find  # type: ignore[assignment]

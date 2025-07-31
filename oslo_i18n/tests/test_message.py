@@ -346,7 +346,7 @@ class MessageTestCase(test_base.BaseTestCase):
         obj = utils.SomeObject(message)
         unicoded_obj = str(obj)
 
-        self.assertEqual(es_translation, unicoded_obj.translation('es'))
+        self.assertEqual(es_translation, unicoded_obj.translation('es'))  # type: ignore[attr-defined]
 
     @mock.patch('gettext.translation')
     def test_translate_multiple_languages(self, mock_translation):
@@ -520,8 +520,8 @@ class MessageTestCase(test_base.BaseTestCase):
         obj = utils.SomeObject(msg)
         unicoded_obj = str(obj)
 
-        self.assertEqual(expected_translation, unicoded_obj.translation('es'))
-        self.assertEqual(default_translation, unicoded_obj.translation('XX'))
+        self.assertEqual(expected_translation, unicoded_obj.translation('es'))  # type: ignore[attr-defined]
+        self.assertEqual(default_translation, unicoded_obj.translation('XX'))  # type: ignore[attr-defined]
 
     @mock.patch('gettext.translation')
     def test_translate_message_with_message_parameter(self, mock_translation):

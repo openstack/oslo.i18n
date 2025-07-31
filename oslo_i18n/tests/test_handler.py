@@ -41,8 +41,10 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         self.logger.addHandler(self.translation_handler)
 
     def test_set_formatter(self):
-        formatter = 'some formatter'
+        formatter = logging.Formatter()
         self.translation_handler.setFormatter(formatter)
+        # narrow types https://github.com/python/mypy/issues/5088
+        assert self.translation_handler.target is not None
         self.assertEqual(formatter, self.translation_handler.target.formatter)
 
     @mock.patch('gettext.translation')
