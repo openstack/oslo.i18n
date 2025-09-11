@@ -14,8 +14,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""logging utilities for translation
-"""
+"""logging utilities for translation"""
 
 from logging import handlers
 

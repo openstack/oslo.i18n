@@ -9,9 +9,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-"""Test fixtures for working with oslo_i18n.
-
-"""
+"""Test fixtures for working with oslo_i18n."""
 
 import gettext
 
@@ -115,9 +113,7 @@ class _PrefixTranslator(gettext.NullTranslations):
 
 
 def _prefix_translations(*x, **y):
-    """Use message id prefixed with domain and language as translation
-
-    """
+    """Use message id prefixed with domain and language as translation"""
     return _PrefixTranslator(prefix=x[0] + '/' + y['languages'][0] + ': ')
 
 
@@ -152,13 +148,23 @@ class PrefixLazyTranslation(fixtures.Fixture):
     def setUp(self):
         super().setUp()
         self.useFixture(ToggleLazy(True))
-        self.useFixture(fixtures.MonkeyPatch(
-            'oslo_i18n._gettextutils.get_available_languages',
-            lambda *x, **y: self.languages))
-        self.useFixture(fixtures.MonkeyPatch(
-            'oslo_i18n.get_available_languages',
-            lambda *x, **y: self.languages))
-        self.useFixture(fixtures.MonkeyPatch('gettext.translation',
-                                             _prefix_translations))
-        self.useFixture(fixtures.MonkeyPatch('locale.getlocale',
-                                             lambda *x, **y: self.locale))
+        self.useFixture(
+            fixtures.MonkeyPatch(
+                'oslo_i18n._gettextutils.get_available_languages',
+                lambda *x, **y: self.languages,
+            )
+        )
+        self.useFixture(
+            fixtures.MonkeyPatch(
+                'oslo_i18n.get_available_languages',
+                lambda *x, **y: self.languages,
+            )
+        )
+        self.useFixture(
+            fixtures.MonkeyPatch('gettext.translation', _prefix_translations)
+        )
+        self.useFixture(
+            fixtures.MonkeyPatch(
+                'locale.getlocale', lambda *x, **y: self.locale
+            )
+        )

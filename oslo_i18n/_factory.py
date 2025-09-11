@@ -13,8 +13,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-"""Translation function factory
-"""
+"""Translation function factory"""
 
 import gettext
 import os
@@ -68,9 +67,9 @@ class TranslatorFactory:
         """
         if domain is None:
             domain = self.domain
-        t = gettext.translation(domain,
-                                localedir=self.localedir,
-                                fallback=True)
+        t = gettext.translation(
+            domain, localedir=self.localedir, fallback=True
+        )
         # Use the appropriate method of the translation object based
         # on the python version.
         m = t.gettext
@@ -80,6 +79,7 @@ class TranslatorFactory:
             if _lazy.USE_LAZY:
                 return _message.Message(msg, domain=domain)
             return m(msg)
+
         return f
 
     def _make_contextual_translation_func(self, domain=None):
@@ -96,9 +96,9 @@ class TranslatorFactory:
         """
         if domain is None:
             domain = self.domain
-        t = gettext.translation(domain,
-                                localedir=self.localedir,
-                                fallback=True)
+        t = gettext.translation(
+            domain, localedir=self.localedir, fallback=True
+        )
         # Use the appropriate method of the translation object based
         # on the python version.
         m = t.gettext
@@ -107,15 +107,17 @@ class TranslatorFactory:
             """oslo.i18n.gettextutils translation with context function."""
             if _lazy.USE_LAZY:
                 msgid = (ctx, msg)
-                return _message.Message(msgid, domain=domain,
-                                        has_contextual_form=True)
+                return _message.Message(
+                    msgid, domain=domain, has_contextual_form=True
+                )
 
-            msgctx = "{}{}{}".format(ctx, CONTEXT_SEPARATOR, msg)
+            msgctx = f"{ctx}{CONTEXT_SEPARATOR}{msg}"
             s = m(msgctx)
             if CONTEXT_SEPARATOR in s:
                 # Translation not found
                 return msg
             return s
+
         return f
 
     def _make_plural_translation_func(self, domain=None):
@@ -133,9 +135,9 @@ class TranslatorFactory:
         """
         if domain is None:
             domain = self.domain
-        t = gettext.translation(domain,
-                                localedir=self.localedir,
-                                fallback=True)
+        t = gettext.translation(
+            domain, localedir=self.localedir, fallback=True
+        )
         # Use the appropriate method of the translation object based
         # on the python version.
         m = t.ngettext
@@ -144,9 +146,11 @@ class TranslatorFactory:
             """oslo.i18n.gettextutils plural translation function."""
             if _lazy.USE_LAZY:
                 msgid = (msgsingle, msgplural, msgcount)
-                return _message.Message(msgid, domain=domain,
-                                        has_plural_form=True)
+                return _message.Message(
+                    msgid, domain=domain, has_plural_form=True
+                )
             return m(msgsingle, msgplural, msgcount)
+
         return f
 
     @property

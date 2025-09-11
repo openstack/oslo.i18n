@@ -25,7 +25,6 @@ from oslo_i18n.tests import utils
 
 
 class TranslateTest(test_base.BaseTestCase):
-
     @mock.patch('gettext.translation')
     def test_translate(self, mock_translation):
         en_message = 'A message in the default locale'

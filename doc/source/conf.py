@@ -20,7 +20,7 @@
 extensions = [
     'sphinx.ext.autodoc',
     'sphinxcontrib.apidoc',
-    'openstackdocstheme'
+    'openstackdocstheme',
 ]
 
 # openstackdocstheme options

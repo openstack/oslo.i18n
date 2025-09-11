@@ -35,6 +35,7 @@ def translate(obj, desired_locale=None):
 
     """
     from oslo_i18n import _message  # avoid circular dependency at module level
+
     message = obj
     if not isinstance(message, _message.Message):
         # If the object to translate is not already translatable,
@@ -65,7 +66,9 @@ def translate_args(args, desired_locale=None):
     if isinstance(args, tuple):
         return tuple(translate(v, desired_locale) for v in args)
     if isinstance(args, dict):
-        translated_dict = {key: translate(value, desired_locale)
-                           for key, value in args.items()}
+        translated_dict = {
+            key: translate(value, desired_locale)
+            for key, value in args.items()
+        }
         return translated_dict
     return translate(args, desired_locale)

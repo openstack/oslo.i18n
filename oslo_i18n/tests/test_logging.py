@@ -22,7 +22,6 @@ from oslo_i18n import _factory
 
 
 class LogLevelTranslationsTest(test_base.BaseTestCase):
-
     def test_info(self):
         self._test('info')
 
@@ -36,8 +35,9 @@ class LogLevelTranslationsTest(test_base.BaseTestCase):
         self._test('critical')
 
     def _test(self, level):
-        with mock.patch.object(_factory.TranslatorFactory,
-                               '_make_translation_func') as mtf:
+        with mock.patch.object(
+            _factory.TranslatorFactory, '_make_translation_func'
+        ) as mtf:
             tf = _factory.TranslatorFactory('domain')
-            getattr(tf, 'log_%s' % level)
-            mtf.assert_called_with('domain-log-%s' % level)
+            getattr(tf, f'log_{level}')
+            mtf.assert_called_with(f'domain-log-{level}')

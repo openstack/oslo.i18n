@@ -31,7 +31,6 @@ LOG = logging.getLogger(__name__)
 
 
 class GettextTest(test_base.BaseTestCase):
-
     def setUp(self):
         super().setUp()
         # remember so we can reset to it later in case it changes
@@ -53,8 +52,9 @@ class GettextTest(test_base.BaseTestCase):
 
         _gettextutils.install('blaa')
         _lazy.enable_lazy(True)
-        self.assertTrue(isinstance(self.t.primary('A Message'),
-                                   _message.Message))
+        self.assertTrue(
+            isinstance(self.t.primary('A Message'), _message.Message)
+        )
 
     def test_gettext_install_looks_up_localedir(self):
         with mock.patch('os.environ.get') as environ_get:
@@ -77,13 +77,15 @@ class GettextTest(test_base.BaseTestCase):
         def _mock_gettext_find(domain, localedir=None, languages=None, all=0):
             languages = languages or []
             if domain == 'domain_1':
-                if any(x in ['en_GB', 'es_ES', 'fil_PH', 'it']
-                       for x in languages):
+                if any(
+                    x in ['en_GB', 'es_ES', 'fil_PH', 'it'] for x in languages
+                ):
                     return 'translation-file'
             elif domain == 'domain_2':
                 if any(x in ['fr_FR', 'zh_HK'] for x in languages):
                     return 'translation-file'
             return None
+
         mock_patcher = mock.patch.object(gettext, 'find', _mock_gettext_find)
         mock_patcher.start()
         self.addCleanup(mock_patcher.stop)
@@ -107,8 +109,7 @@ class GettextTest(test_base.BaseTestCase):
             set(domain_1_languages),
         )
         self.assertEqual(3, len(domain_2_languages), domain_2_languages)
-        self.assertEqual({'en_US', 'fr_FR', 'zh_HK'},
-                         set(domain_2_languages))
+        self.assertEqual({'en_US', 'fr_FR', 'zh_HK'}, set(domain_2_languages))
 
         self.assertEqual(2, len(_gettextutils._AVAILABLE_LANGUAGES))
         # Now test an unknown domain, only en_US should be included

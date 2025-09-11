@@ -24,7 +24,6 @@ from oslo_i18n import fixture
 
 
 class TranslationFixtureTest(test_base.BaseTestCase):
-
     def setUp(self):
         super().setUp()
         self.trans_fixture = self.useFixture(fixture.Translation())
@@ -42,7 +41,6 @@ class TranslationFixtureTest(test_base.BaseTestCase):
 
 
 class ToggleLazyFixtureText(test_base.BaseTestCase):
-
     def test_on_on(self):
         _lazy.USE_LAZY = True
         f = fixture.ToggleLazy(True)
@@ -80,9 +78,7 @@ _FAKE_LANG = 'en_ZZ'
 
 
 class PrefixLazyTranslationTest(test_base.BaseTestCase):
-
     def test_default(self):
-
         # Turn lazy off to check that fixture turns it on
         self.useFixture(fixture.ToggleLazy(False))
         self.useFixture(fixture.PrefixLazyTranslation())
@@ -90,11 +86,13 @@ class PrefixLazyTranslationTest(test_base.BaseTestCase):
         default_lang = fixture.PrefixLazyTranslation._DEFAULT_LANG
         raw_id1 = 'fake msg1'
         expected_msg = 'oslo_i18n/' + default_lang + ': ' + raw_id1
-        msg1 = _(raw_id1)    # noqa
-        self.assertEqual([default_lang],
-                         _gettextutils.get_available_languages('oslo_i18n'))
-        self.assertEqual([default_lang],
-                         oslo_i18n.get_available_languages('oslo_i18n'))
+        msg1 = _(raw_id1)  # noqa
+        self.assertEqual(
+            [default_lang], _gettextutils.get_available_languages('oslo_i18n')
+        )
+        self.assertEqual(
+            [default_lang], oslo_i18n.get_available_languages('oslo_i18n')
+        )
         self.assertEqual(expected_msg, _translate.translate(msg1))
 
     def test_extra_lang(self):
@@ -102,16 +100,22 @@ class PrefixLazyTranslationTest(test_base.BaseTestCase):
         languages.append(_FAKE_LANG)
         self.useFixture(fixture.PrefixLazyTranslation(languages=languages))
         raw_id1 = 'fake msg1'
-        expected_msg_en_US = ('oslo_i18n/' +
-                              fixture.PrefixLazyTranslation._DEFAULT_LANG +
-                              ': ' + raw_id1)
+        expected_msg_en_US = (
+            'oslo_i18n/'
+            + fixture.PrefixLazyTranslation._DEFAULT_LANG
+            + ': '
+            + raw_id1
+        )
         expected_msg_en_ZZ = 'oslo_i18n/' + _FAKE_LANG + ': ' + raw_id1
-        msg1 = _(raw_id1)     # noqa
-        self.assertEqual(languages,
-                         _gettextutils.get_available_languages('oslo_i18n'))
-        self.assertEqual(languages,
-                         oslo_i18n.get_available_languages('oslo_i18n'))
+        msg1 = _(raw_id1)  # noqa
+        self.assertEqual(
+            languages, _gettextutils.get_available_languages('oslo_i18n')
+        )
+        self.assertEqual(
+            languages, oslo_i18n.get_available_languages('oslo_i18n')
+        )
         self.assertEqual(expected_msg_en_US, _translate.translate(msg1))
-        self.assertEqual(expected_msg_en_ZZ,
-                         _translate.translate(msg1,
-                                              desired_locale=_FAKE_LANG))
+        self.assertEqual(
+            expected_msg_en_ZZ,
+            _translate.translate(msg1, desired_locale=_FAKE_LANG),
+        )

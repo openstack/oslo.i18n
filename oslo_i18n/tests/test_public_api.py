@@ -18,7 +18,6 @@ from oslo_i18n import _lazy
 
 
 class PublicAPITest(unittest.TestCase):
-
     def test_create_factory(self):
         oslo_i18n.TranslatorFactory('domain')
 

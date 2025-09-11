@@ -20,7 +20,6 @@ from oslo_i18n import _lazy
 
 
 class LazyTest(test_base.BaseTestCase):
-
     def setUp(self):
         super().setUp()
         self._USE_LAZY = _lazy.USE_LAZY

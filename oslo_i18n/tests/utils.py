@@ -14,7 +14,6 @@
 
 
 class SomeObject:
-
     def __init__(self, message):
         self.message = message
 
@@ -23,7 +22,6 @@ class SomeObject:
 
 
 class NoDeepCopyObject:
-
     def __init__(self, value):
         self.value = value
 

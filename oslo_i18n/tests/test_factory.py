@@ -27,7 +27,6 @@ CONTEXT_SEPARATOR = _message.CONTEXT_SEPARATOR
 
 
 class TranslatorFactoryTest(test_base.BaseTestCase):
-
     def setUp(self):
         super().setUp()
         # remember so we can reset to it later in case it changes
@@ -62,8 +61,9 @@ class TranslatorFactoryTest(test_base.BaseTestCase):
         self.assertNotIsInstance(r, _message.Message)
 
     def test_log_level_domain_name(self):
-        with mock.patch.object(_factory.TranslatorFactory,
-                               '_make_translation_func') as mtf:
+        with mock.patch.object(
+            _factory.TranslatorFactory, '_make_translation_func'
+        ) as mtf:
             tf = _factory.TranslatorFactory('domain')
             tf._make_log_translation_func('mylevel')
             mtf.assert_called_with('domain-log-mylevel')

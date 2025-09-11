@@ -45,9 +45,9 @@ class MessageTestCase(test_base.BaseTestCase):
 
     @mock.patch('locale.getlocale')
     @mock.patch('gettext.translation')
-    def test_create_message_non_english_default_locale(self,
-                                                       mock_translation,
-                                                       mock_locale):
+    def test_create_message_non_english_default_locale(
+        self, mock_translation, mock_locale
+    ):
         msgid = 'A message in English'
         es_translation = 'A message in Spanish'
 
@@ -69,15 +69,19 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertIsInstance(message.translation(), str)
 
     def test_mod_with_named_parameters(self):
-        msgid = ("%(description)s\nCommand: %(cmd)s\n"
-                 "Exit code: %(exit_code)s\nStdout: %(stdout)r\n"
-                 "Stderr: %(stderr)r %%(something)s")
-        params = {'description': 'test1',
-                  'cmd': 'test2',
-                  'exit_code': 'test3',
-                  'stdout': 'test4',
-                  'stderr': 'test5',
-                  'something': 'trimmed'}
+        msgid = (
+            "%(description)s\nCommand: %(cmd)s\n"
+            "Exit code: %(exit_code)s\nStdout: %(stdout)r\n"
+            "Stderr: %(stderr)r %%(something)s"
+        )
+        params = {
+            'description': 'test1',
+            'cmd': 'test2',
+            'exit_code': 'test3',
+            'stdout': 'test4',
+            'stderr': 'test5',
+            'something': 'trimmed',
+        }
 
         result = _message.Message(msgid) % params
 
@@ -86,14 +90,18 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(expected, result.translation())
 
     def test_multiple_mod_with_named_parameter(self):
-        msgid = ("%(description)s\nCommand: %(cmd)s\n"
-                 "Exit code: %(exit_code)s\nStdout: %(stdout)r\n"
-                 "Stderr: %(stderr)r")
-        params = {'description': 'test1',
-                  'cmd': 'test2',
-                  'exit_code': 'test3',
-                  'stdout': 'test4',
-                  'stderr': 'test5'}
+        msgid = (
+            "%(description)s\nCommand: %(cmd)s\n"
+            "Exit code: %(exit_code)s\nStdout: %(stdout)r\n"
+            "Stderr: %(stderr)r"
+        )
+        params = {
+            'description': 'test1',
+            'cmd': 'test2',
+            'exit_code': 'test3',
+            'stdout': 'test4',
+            'stderr': 'test5',
+        }
 
         # Run string interpolation the first time to make a new Message
         first = _message.Message(msgid) % params
@@ -131,13 +139,17 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(expected.translation(), first.translation())
 
     def test_mod_with_named_parameters_no_space(self):
-        msgid = ("Request: %(method)s http://%(server)s:"
-                 "%(port)s%(url)s with headers %(headers)s")
-        params = {'method': 'POST',
-                  'server': 'test1',
-                  'port': 1234,
-                  'url': 'test2',
-                  'headers': {'h1': 'val1'}}
+        msgid = (
+            "Request: %(method)s http://%(server)s:"
+            "%(port)s%(url)s with headers %(headers)s"
+        )
+        params = {
+            'method': 'POST',
+            'server': 'test1',
+            'port': 1234,
+            'url': 'test2',
+            'headers': {'h1': 'val1'},
+        }
 
         result = _message.Message(msgid) % params
 
@@ -201,7 +213,7 @@ class MessageTestCase(test_base.BaseTestCase):
             self.assertEqual(message, result.translation())
 
             # simulate writing out as string
-            result_str = '%s' % result.translation()
+            result_str = f'{result.translation()}'
             self.assertEqual(result_str, message)
             self.assertEqual(message, result)
 
@@ -255,10 +267,12 @@ class MessageTestCase(test_base.BaseTestCase):
 
         self.assertIsNot(message, m1)
         self.assertIsNot(message, m2)
-        self.assertEqual(m1.translation(),
-                         msgid % {'test1': 'foo', 'test2': 'bar'})
-        self.assertEqual(m2.translation(),
-                         msgid % {'test1': 'foo2', 'test2': 'bar2'})
+        self.assertEqual(
+            m1.translation(), msgid % {'test1': 'foo', 'test2': 'bar'}
+        )
+        self.assertEqual(
+            m2.translation(), msgid % {'test1': 'foo2', 'test2': 'bar2'}
+        )
 
     def test_mod_with_none_parameter(self):
         msgid = "Some string with params: %s"
@@ -268,15 +282,16 @@ class MessageTestCase(test_base.BaseTestCase):
 
     def test_mod_with_missing_parameters(self):
         msgid = "Some string with params: %s %s"
-        test_me = lambda: _message.Message(msgid) % 'just one'
+
+        def test_me():
+            return _message.Message(msgid) % 'just one'
+
         # Just like with strings missing parameters raise TypeError
         self.assertRaises(TypeError, test_me)
 
     def test_mod_with_extra_parameters(self):
         msgid = "Some string with params: %(param1)s %(param2)s"
-        params = {'param1': 'test',
-                  'param2': 'test2',
-                  'param3': 'notinstring'}
+        params = {'param1': 'test', 'param2': 'test2', 'param3': 'notinstring'}
 
         result = _message.Message(msgid) % params
 
@@ -289,12 +304,18 @@ class MessageTestCase(test_base.BaseTestCase):
 
     def test_add_disabled(self):
         msgid = "A message"
-        test_me = lambda: _message.Message(msgid) + ' some string'
+
+        def test_me():
+            return _message.Message(msgid) + ' some string'
+
         self.assertRaises(TypeError, test_me)
 
     def test_radd_disabled(self):
         msgid = "A message"
-        test_me = lambda: utils.SomeObject('test') + _message.Message(msgid)
+
+        def test_me():
+            return utils.SomeObject('test') + _message.Message(msgid)
+
         self.assertRaises(TypeError, test_me)
 
     @mock.patch('gettext.translation')
@@ -336,8 +357,7 @@ class MessageTestCase(test_base.BaseTestCase):
 
         es_translations = {en_message: es_translation}
         zh_translations = {en_message: zh_translation}
-        translations_map = {'es': es_translations,
-                            'zh': zh_translations}
+        translations_map = {'es': es_translations, 'zh': zh_translations}
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
 
@@ -367,9 +387,9 @@ class MessageTestCase(test_base.BaseTestCase):
 
     @mock.patch('gettext.translation')
     @mock.patch('oslo_i18n._message.LOG')
-    def test_translate_message_bad_translation(self,
-                                               mock_log,
-                                               mock_translation):
+    def test_translate_message_bad_translation(
+        self, mock_log, mock_translation
+    ):
         message_with_params = 'A message: %s'
         es_translation = 'A message in Spanish: %s %s'
         param = 'A Message param'
@@ -387,26 +407,31 @@ class MessageTestCase(test_base.BaseTestCase):
             self.assertEqual(default_translation, msg.translation('es'))
 
             self.assertEqual(1, len(w))
-            self.assertEqual("Failed to insert replacement values into "
-                             "translated message A message in Spanish: %s %s "
-                             "(Original: 'A message: %s'): "
-                             "not enough arguments for format string",
-                             str(w[0].message))
+            self.assertEqual(
+                "Failed to insert replacement values into "
+                "translated message A message in Spanish: %s %s "
+                "(Original: 'A message: %s'): "
+                "not enough arguments for format string",
+                str(w[0].message),
+            )
 
-        mock_log.debug.assert_called_with(('Failed to insert replacement '
-                                           'values into translated message '
-                                           '%s (Original: %r): %s'),
-                                          es_translation,
-                                          message_with_params,
-                                          mock.ANY)
+        mock_log.debug.assert_called_with(
+            (
+                'Failed to insert replacement '
+                'values into translated message '
+                '%s (Original: %r): %s'
+            ),
+            es_translation,
+            message_with_params,
+            mock.ANY,
+        )
 
     @mock.patch('gettext.translation')
     @mock.patch('locale.getlocale', return_value=('es', ''))
     @mock.patch('oslo_i18n._message.LOG')
-    def test_translate_message_bad_default_translation(self,
-                                                       mock_log,
-                                                       mock_locale,
-                                                       mock_translation):
+    def test_translate_message_bad_default_translation(
+        self, mock_log, mock_locale, mock_translation
+    ):
         message_with_params = 'A message: %s'
         es_translation = 'A message in Spanish: %s %s'
         param = 'A Message param'
@@ -421,18 +446,24 @@ class MessageTestCase(test_base.BaseTestCase):
             warnings.simplefilter("always")
             msg = msg % param
             self.assertEqual(1, len(w))
-            self.assertEqual("Failed to insert replacement values into "
-                             "translated message A message in Spanish: %s %s "
-                             "(Original: 'A message: %s'): "
-                             "not enough arguments for format string",
-                             str(w[0].message))
+            self.assertEqual(
+                "Failed to insert replacement values into "
+                "translated message A message in Spanish: %s %s "
+                "(Original: 'A message: %s'): "
+                "not enough arguments for format string",
+                str(w[0].message),
+            )
 
-        mock_log.debug.assert_called_with(('Failed to insert replacement '
-                                           'values into translated message '
-                                           '%s (Original: %r): %s'),
-                                          es_translation,
-                                          message_with_params,
-                                          mock.ANY)
+        mock_log.debug.assert_called_with(
+            (
+                'Failed to insert replacement '
+                'values into translated message '
+                '%s (Original: %r): %s'
+            ),
+            es_translation,
+            message_with_params,
+            mock.ANY,
+        )
         mock_log.reset_mock()
 
         default_translation = message_with_params % param
@@ -446,8 +477,10 @@ class MessageTestCase(test_base.BaseTestCase):
         param = 'A Message param'
         param_translation = 'A Message param in Spanish'
 
-        translations = {message_with_params: es_translation,
-                        param: param_translation}
+        translations = {
+            message_with_params: es_translation,
+            param: param_translation,
+        }
         translator = fakes.FakeTranslations.translator({'es': translations})
         mock_translation.side_effect = translator
 
@@ -467,8 +500,9 @@ class MessageTestCase(test_base.BaseTestCase):
         self.assertEqual(default_translation, msg.translation('XX'))
 
     @mock.patch('gettext.translation')
-    def test_translate_message_with_param_from_unicoded_obj(self,
-                                                            mock_translation):
+    def test_translate_message_with_param_from_unicoded_obj(
+        self, mock_translation
+    ):
         message_with_params = 'A message: %s'
         es_translation = 'A message in Spanish: %s'
         param = 'A Message param'
@@ -496,8 +530,10 @@ class MessageTestCase(test_base.BaseTestCase):
         message_param = 'A message param'
         es_param_translation = 'A message param in Spanish'
 
-        translations = {message_with_params: es_translation,
-                        message_param: es_param_translation}
+        translations = {
+            message_with_params: es_translation,
+            message_param: es_param_translation,
+        }
         translator = fakes.FakeTranslations.translator({'es': translations})
         mock_translation.side_effect = translator
 
@@ -519,9 +555,11 @@ class MessageTestCase(test_base.BaseTestCase):
         another_message_param = 'Another message param'
         another_es_param_translation = 'Another message param in Spanish'
 
-        translations = {message_with_params: es_translation,
-                        message_param: es_param_translation,
-                        another_message_param: another_es_param_translation}
+        translations = {
+            message_with_params: es_translation,
+            message_param: es_param_translation,
+            another_message_param: another_es_param_translation,
+        }
         translator = fakes.FakeTranslations.translator({'es': translations})
         mock_translation.side_effect = translator
 
@@ -530,10 +568,14 @@ class MessageTestCase(test_base.BaseTestCase):
         param_2 = _message.Message(another_message_param)
         msg = msg % (param_1, param_2)
 
-        default_translation = message_with_params % (message_param,
-                                                     another_message_param)
-        expected_translation = es_translation % (es_param_translation,
-                                                 another_es_param_translation)
+        default_translation = message_with_params % (
+            message_param,
+            another_message_param,
+        )
+        expected_translation = es_translation % (
+            es_param_translation,
+            another_es_param_translation,
+        )
         self.assertEqual(expected_translation, msg.translation('es'))
         self.assertEqual(default_translation, msg.translation('XX'))
 
@@ -544,8 +586,10 @@ class MessageTestCase(test_base.BaseTestCase):
         message_param = 'A Message param'
         es_param_translation = 'A message param in Spanish'
 
-        translations = {message_with_params: es_translation,
-                        message_param: es_param_translation}
+        translations = {
+            message_with_params: es_translation,
+            message_param: es_param_translation,
+        }
         translator = fakes.FakeTranslations.translator({'es': translations})
         mock_translation.side_effect = translator
 
@@ -560,9 +604,9 @@ class MessageTestCase(test_base.BaseTestCase):
 
     @mock.patch('locale.getlocale')
     @mock.patch('gettext.translation')
-    def test_translate_message_non_default_locale(self,
-                                                  mock_translation,
-                                                  mock_locale):
+    def test_translate_message_non_default_locale(
+        self, mock_translation, mock_locale
+    ):
         message_with_params = 'A message with params: %(param)s'
         es_translation = 'A message with params in Spanish: %(param)s'
         zh_translation = 'A message with params in Chinese: %(param)s'
@@ -573,16 +617,26 @@ class MessageTestCase(test_base.BaseTestCase):
         zh_param_translation = 'A message param in Chinese'
         fr_param_translation = 'A message param in French'
 
-        es_translations = {message_with_params: es_translation,
-                           message_param: es_param_translation}
-        zh_translations = {message_with_params: zh_translation,
-                           message_param: zh_param_translation}
-        fr_translations = {message_with_params: fr_translation,
-                           message_param: fr_param_translation}
+        es_translations = {
+            message_with_params: es_translation,
+            message_param: es_param_translation,
+        }
+        zh_translations = {
+            message_with_params: zh_translation,
+            message_param: zh_param_translation,
+        }
+        fr_translations = {
+            message_with_params: fr_translation,
+            message_param: fr_param_translation,
+        }
 
-        translator = fakes.FakeTranslations.translator({'es': es_translations,
-                                                        'zh': zh_translations,
-                                                        'fr': fr_translations})
+        translator = fakes.FakeTranslations.translator(
+            {
+                'es': es_translations,
+                'zh': zh_translations,
+                'fr': fr_translations,
+            }
+        )
         mock_translation.side_effect = translator
         mock_locale.return_value = ('es',)
 
@@ -606,7 +660,6 @@ class MessageTestCase(test_base.BaseTestCase):
 
 
 class TranslateMsgidTest(test_base.BaseTestCase):
-
     @mock.patch('gettext.translation')
     def test_contextual(self, translation):
         lang = mock.Mock()
@@ -660,7 +713,9 @@ class TranslateMsgidTest(test_base.BaseTestCase):
         )
         self.assertEqual('translated', result)
         trans.assert_called_with(
-            'single', 'plural', -1,
+            'single',
+            'plural',
+            -1,
         )
 
     @mock.patch('gettext.translation')

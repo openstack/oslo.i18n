@@ -35,3 +35,14 @@ Homepage = "https://docs.openstack.org/oslo.i18n/latest"
 packages = [
     "oslo_i18n"
 ]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.format]
+quote-style = "preserve"
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "S", "UP"]
+ignore = ["F403"]

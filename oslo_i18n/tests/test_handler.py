@@ -28,7 +28,6 @@ LOG = logging.getLogger(__name__)
 
 
 class TranslationHandlerTestCase(test_base.BaseTestCase):
-
     def setUp(self):
         super().setUp()
 
@@ -67,8 +66,10 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         log_arg = 'Arg to be logged'
         log_arg_translation = 'An arg to be logged in Chinese'
 
-        translations = {log_message: log_message_translation,
-                        log_arg: log_arg_translation}
+        translations = {
+            log_message: log_message_translation,
+            log_arg: log_arg_translation,
+        }
         translations_map = {'zh_CN': translations}
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
@@ -77,8 +78,10 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         arg = _message.Message(log_arg)
 
         self.logger.info(msg, arg)
-        self.assertIn(log_message_translation % log_arg_translation,
-                      self.stream.getvalue())
+        self.assertIn(
+            log_message_translation % log_arg_translation,
+            self.stream.getvalue(),
+        )
 
     @mock.patch('gettext.translation')
     def test_emit_translated_message_with_named_args(self, mock_translation):
@@ -89,9 +92,11 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         log_arg_2 = 'Arg2 to be logged'
         log_arg_2_translation = 'Arg2 to be logged in Chinese'
 
-        translations = {log_message: log_message_translation,
-                        log_arg_1: log_arg_1_translation,
-                        log_arg_2: log_arg_2_translation}
+        translations = {
+            log_message: log_message_translation,
+            log_arg_1: log_arg_1_translation,
+            log_arg_2: log_arg_2_translation,
+        }
         translations_map = {'zh_CN': translations}
         translator = fakes.FakeTranslations.translator(translations_map)
         mock_translation.side_effect = translator
@@ -101,6 +106,8 @@ class TranslationHandlerTestCase(test_base.BaseTestCase):
         arg_2 = _message.Message(log_arg_2)
 
         self.logger.info(msg, {'arg1': arg_1, 'arg2': arg_2})
-        translation = log_message_translation % {'arg1': log_arg_1_translation,
-                                                 'arg2': log_arg_2_translation}
+        translation = log_message_translation % {
+            'arg1': log_arg_1_translation,
+            'arg2': log_arg_2_translation,
+        }
         self.assertIn(translation, self.stream.getvalue())

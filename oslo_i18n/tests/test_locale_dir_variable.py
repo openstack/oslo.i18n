@@ -18,9 +18,9 @@ import testscenarios.testcase
 from oslo_i18n import _locale
 
 
-class LocaleDirVariableTest(testscenarios.testcase.WithScenarios,
-                            test_base.BaseTestCase):
-
+class LocaleDirVariableTest(
+    testscenarios.testcase.WithScenarios, test_base.BaseTestCase
+):
     scenarios = [
         ('simple', {'domain': 'simple', 'expected': 'SIMPLE_LOCALEDIR'}),
         ('with_dot', {'domain': 'one.two', 'expected': 'ONE_TWO_LOCALEDIR'}),
