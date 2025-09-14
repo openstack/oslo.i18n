@@ -29,7 +29,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://docs.openstack.org/oslo.i18n/latest"
+Homepage = "https://docs.openstack.org/oslo.i18n"
+Repository = "https://opendev.org/openstack/oslo.i18n"
 
 [tool.setuptools]
 packages = [
