@@ -20,7 +20,7 @@ from oslo_i18n import _lazy
 from oslo_i18n import _message
 
 
-class Translation(fixtures.Fixture):  # type: ignore[misc]
+class Translation(fixtures.Fixture):
     """Fixture for managing translatable strings.
 
     This class provides methods for creating translatable strings
@@ -66,7 +66,7 @@ class Translation(fixtures.Fixture):  # type: ignore[misc]
         return str(msg)
 
 
-class ToggleLazy(fixtures.Fixture):  # type: ignore[misc]
+class ToggleLazy(fixtures.Fixture):
     """Fixture to toggle lazy translation on or off for a test."""
 
     def __init__(self, enabled: bool) -> None:
@@ -119,7 +119,7 @@ def _prefix_translations(*x: Any, **y: Any) -> _PrefixTranslator:
     return _PrefixTranslator(prefix=x[0] + '/' + y['languages'][0] + ': ')
 
 
-class PrefixLazyTranslation(fixtures.Fixture):  # type: ignore[misc]
+class PrefixLazyTranslation(fixtures.Fixture):
     """Fixture to prefix lazy translation enabled messages
 
     Use of this fixture will cause messages supporting lazy translation to
