@@ -103,12 +103,12 @@ class GettextTest(test_base.BaseTestCase):
         self.assertEqual('en_US', domain_1_languages[0])
         self.assertEqual('en_US', domain_2_languages[0])
 
-        self.assertEqual(5, len(domain_1_languages), domain_1_languages)
+        self.assertEqual(5, len(domain_1_languages), str(domain_1_languages))
         self.assertEqual(
             {'en_US', 'fil_PH', 'en_GB', 'es_ES', 'it'},
             set(domain_1_languages),
         )
-        self.assertEqual(3, len(domain_2_languages), domain_2_languages)
+        self.assertEqual(3, len(domain_2_languages), str(domain_2_languages))
         self.assertEqual({'en_US', 'fr_FR', 'zh_HK'}, set(domain_2_languages))
 
         self.assertEqual(2, len(_gettextutils._AVAILABLE_LANGUAGES))
