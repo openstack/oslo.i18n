@@ -14,9 +14,29 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from __future__ import annotations
+
+from typing import overload, TypeVar, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from oslo_i18n import _message
+
 __all__ = [
     'translate',
 ]
+
+
+T = TypeVar('T')
+
+
+@overload
+def translate(
+    obj: _message.Message, desired_locale: str | None = None
+) -> str: ...
+
+
+@overload
+def translate(obj: T, desired_locale: str | None = None) -> T: ...
 
 
 def translate(obj: object, desired_locale: str | None = None) -> object:
