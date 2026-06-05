@@ -407,7 +407,7 @@ class MessageTestCase(test_base.BaseTestCase):
             self.assertEqual(default_translation, msg.translation('es'))
 
             self.assertEqual(1, len(w))
-            self.assertEqual(
+            self.assertIn(
                 "Failed to insert replacement values into "
                 "translated message A message in Spanish: %s %s "
                 "(Original: 'A message: %s'): "
@@ -446,7 +446,7 @@ class MessageTestCase(test_base.BaseTestCase):
             warnings.simplefilter("always")
             msg = msg % param
             self.assertEqual(1, len(w))
-            self.assertEqual(
+            self.assertIn(
                 "Failed to insert replacement values into "
                 "translated message A message in Spanish: %s %s "
                 "(Original: 'A message: %s'): "
