@@ -119,7 +119,9 @@ def get_available_languages(domain: str) -> list[str]:
         language for language in locale_identifiers if find(language)
     )
     language_list.extend(
-        alias for alias, _ in _BABEL_ALIASES.items() if find(alias)
+        alias
+        for alias, _ in _BABEL_ALIASES.items()
+        if find(alias) and alias not in language_list
     )
 
     _AVAILABLE_LANGUAGES[domain] = language_list
