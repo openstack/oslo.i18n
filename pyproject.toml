@@ -33,7 +33,7 @@ Homepage = "https://docs.openstack.org/oslo.i18n"
 Repository = "https://opendev.org/openstack/oslo.i18n"
 
 [tool.setuptools.packages.find]
-include = ["oslo_i18n"]
+include = ["oslo_i18n*"]
 
 [tool.mypy]
 python_version = "3.11"
